@@ -36,7 +36,7 @@ Mappy
   <dd><em>Пример: address_placemark="true"</em></dd>
   
   <dt>zoom</dt>
-  <dd>0 .. 99 - увеличение карты. Чем меньше, тем выше.</dd>
+  <dd>0 .. 99 - увеличение карты. Чем меньше, тем ближе.</dd>
   <dd><em>Пример: zoom="14"</em></dd>
   
   <dt>zoom_control</dt>
@@ -74,28 +74,4 @@ Mappy
 
 ## Примеры
 
-### Пример 1
 
-`<mappy:yandex address="г. Пермь, ул. Пермская 200" zoom="14" width="640" height="480"></mappy:yandex>`
-
-![example1](http://i.imm.io/172qd.jpeg "Exmaple 1")
-
-### Пример 2
-
-`<mappy:yandex address="г. Пермь, ул. Пермская 200" zoom="10" width="640" height="480" address_placemark="true" zoom_control="20,50"></mappy:yandex>`
-
-![example2](http://i.imm.io/172rY.jpeg "Exmaple 2")
-
-### Пример 3
-
-`<mappy:yandex address="г. Пермь, ул. Пермская 200" zoom="10" width="640" height="480" address_placemark="true" small_zoom_control="20,50" type_selector="true" map_tools="50,50" traffic_control="true"></mappy:yandex>`
-
-![example3](http://i.imm.io/172sV.jpeg "Exmaple 3")
-
-### Пример 4
-
-`<mappy:yandex address="г. Пермь, ул. Пермская 200" zoom="15" width="640" height="480" route="create-route,route-start"></mappy:yandex>`
-`<input type="text" id="route-start" value="Пермь, "><input type="button" id="create-route" value="Показать путь">`
-
-
-![example4](http://i.imm.io/172tP.jpeg "Exmaple 4")

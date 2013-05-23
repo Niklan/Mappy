@@ -92,11 +92,12 @@
             }
 
             // Create a route.
-            if ($("yandex").attr("route_button_id") && $("yandex").attr("route_address_id")) {
+            if ($("yandex").attr("route")) {
+                var route_array = $("yandex").attr("route").split(",")
                 var router;
-                $("#" + $("yandex").attr("route_button_id")).click(function() {
+                $("#" + route_array[0]).click(function() {
                     // Address 'from'.
-                    var route_address = $("#" + $("yandex").attr("route_address_id")).val();
+                    var route_address = $("#" + route_array[1]).val();
 
                     // Generate route.
                     ymaps.route([

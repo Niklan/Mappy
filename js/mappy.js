@@ -13,5 +13,8 @@
                 $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.mappy.js");
             });
         }
+        if ($('body *').is('google')) {
+            $.getScript("/" + Drupal.settings.mappy_location + "/js/google.mappy.js");
+        }
     });
 })(jQuery);

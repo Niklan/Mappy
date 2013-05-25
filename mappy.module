@@ -11,6 +11,8 @@
 function mappy_page_build(&$page) {
   // Attach our main JS to page.
   drupal_add_js(drupal_get_path('module', 'mappy') . '/js/mappy.js');
+  // We call script on every page, but it start working only by request.
+  drupal_add_js('https://www.google.com/jsapi');
   // Add module path for script locations.
   drupal_add_js(array('mappy_location' => drupal_get_path('module', 'mappy')), 'setting');
 }

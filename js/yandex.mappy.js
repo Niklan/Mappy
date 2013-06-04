@@ -14,6 +14,11 @@
     var height = $("yandex").attr("height");
     // The scale of the map.
     var zoom = $("yandex").attr("zoom");
+    // Content for balloons.
+    var balloonContent = ($("yandex").attr("balloonContent")) ? $("yandex").attr("balloonContent").split(";") : false;
+    // Disable balloons.
+    var addressPlacemark = ($("yandex").attr("addressPlacemark") == "false") ? false : true;
+
 
     // Obtain the coordinates of the first address (for map center).
     $.ajax({
@@ -81,43 +86,57 @@
                 zoom: zoom
             });
 
-            // Array Geocoding addresses and coordinates, as well as adding labels.
-            // If the address is greater than 2 then execute massively.
-            if (address.length > 1) {
-                myMultiGeocoder = new MultiGeocoder({ boundedBy: myMap.getBounds() });
-                myMultiGeocoder.geocode(address)
-                    .then(
-                    function (res) {
-                        myMap.geoObjects.add(res.geoObjects);
-                    },
-                    function (err) {
-                        alert(err);
-                    }
-                );
-            }
-            // Add placemark to the map if it is requested and is listed only one address.
-            else if ($("yandex").attr("address_placemark") == "true") {
-                centerPlacemark = new ymaps.Placemark(address_coordinates);
+            // Add balloon on map;
+            function addBalloon(balloonCoordinates, balloonAddress, balloonContent) {
+                var coords = balloonCoordinates;
+                var address = balloonAddress;
+                var content = balloonContent;
+                balloon = new ymaps.Placemark(coords, {
+                    balloonContent: content,
+                    hintContent: address
+                }, {
+                    preset: 'twirl#blueIcon'
+                })
                 myMap.geoObjects
-                    .add(centerPlacemark);
+                    .add(balloon);
+            }
+
+            // Array Geocoding addresses and coordinates, as well as adding labels.
+            if (address.length > 1) {
+                var geocoding_coord;
+                for (var i = 0; i < address.length; i++) {
+                    // Prepare balloon content.
+                    if (balloonContent[i] != "undefined") {
+                        var content = balloonContent[i];
+                    }
+                    $.ajax({
+                        url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + address[i] + '&result=1',
+                        success: function(data){
+                            geocoding_coord = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
+                            var address = data.response.GeoObjectCollection.featureMember[0].GeoObject.name;
+                            (addressPlacemark) ? addBalloon(geocoding_coord, address, content) : false;
+                        },
+                        async: false
+                    });
+                }
             }
 
             // The zoom button.
-            if ($("yandex").attr("zoom_control")) {
-                var zoom_control = $("yandex").attr("zoom_control").split(",");
+            if ($("yandex").attr("zoomСontrol")) {
+                var zoom_control = $("yandex").attr("zoomСontrol").split(",");
                 myMap.controls
                     .add('zoomControl', { left: zoom_control[0], top: zoom_control[1] });
             }
 
             // Small button zoom.
-            if ($("yandex").attr("small_zoom_control")) {
-                var small_zoom_control = $("yandex").attr("small_zoom_control").split(",");
+            if ($("yandex").attr("smallZoomControl")) {
+                var small_zoom_control = $("yandex").attr("smallZoomControl").split(",");
                 myMap.controls
                     .add('smallZoomControl', { left: small_zoom_control[0], top: small_zoom_control[1] });
             }
 
             // List of type of map.
-            if ($("yandex").attr("type_selector") == "true") {
+            if ($("yandex").attr("mapTypeControl") == "true") {
                 myMap.controls
                     .add('typeSelector');
             }
@@ -130,7 +149,7 @@
             }
 
             // Button showing the traffic jams on the road.
-            if ($("yandex").attr("traffic_control")) {
+            if ($("yandex").attr("mapTrafficControl")) {
                 var trafficControl = new ymaps.control.TrafficControl();
                 myMap.controls
                     .add(trafficControl);

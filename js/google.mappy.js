@@ -25,6 +25,8 @@
         var mapTypeControl = $("google").attr("mapTypeControl") == "false" ? false : true;
         // The enabled/disabled state of the Pan control.
         var panControl = $("google").attr("panControl") == "false" ? false : true;
+        // Content for balloons.
+        var balloonContent = ($("google").attr("balloonContent")) ? $("google").attr("balloonContent").split(";") : false;
 
         // Obtain the coordinates of the first address (for map center).
         $.ajax({
@@ -33,7 +35,8 @@
                 address_lat = data.results[0].geometry.location.lat;
                 address_lng = data.results[0].geometry.location.lng;
                 initialize();
-            }
+            },
+            async: false
         });
 
         var map;
@@ -63,12 +66,45 @@
                 mapOptions);
 
             // Add markers on the map.
-            console.log(("google").attr("centerPlacemark"));
-            if (("google").attr("centerPlacemark") == "true") {
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(address_lat, address_lng),
-                    map: map
-                });
+            if ($("google").attr("addressPlacemark") != "false") {
+                for (var i=0; i < address.length; i++) {
+                    var placemarkLat;
+                    var placemarkLng;
+                    var placemarkAddress;
+                    var placemarkContent = balloonContent[i];
+
+                    $.ajax({
+                        url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + address[i] + '&sensor=false',
+                        success: function(data){
+                            placemarkLat = data.results[0].geometry.location.lat;
+                            placemarkLng = data.results[0].geometry.location.lng;
+                            placemarkAddress = data.results[0].address_components[1].long_name + " " + data.results[0].address_components[0].long_name;
+                        },
+                        async: false
+                    });
+
+                    // Create marker.
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(placemarkLat, placemarkLng),
+                        map: map,
+                        title: placemarkAddress
+                    });
+
+                    // Add balloon with content.
+                    function addInfoWindow(marker, message) {
+                        var info = message;
+
+                        var infoWindow = new google.maps.InfoWindow({
+                            content: message
+                        });
+
+                        google.maps.event.addListener(marker, 'click', function () {
+                            infoWindow.open(map, marker);
+                        });
+                    }
+                    console.log(placemarkContent);
+                    addInfoWindow(marker, placemarkContent);
+                }
             }
         }
     }});

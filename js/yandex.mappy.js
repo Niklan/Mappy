@@ -19,7 +19,6 @@
     // Disable balloons.
     var addressPlacemark = ($("yandex").attr("addressPlacemark") == "false") ? false : true;
 
-
     // Obtain the coordinates of the first address (for map center).
     $.ajax({
         url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + address[0] + '&result=1',

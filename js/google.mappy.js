@@ -102,7 +102,6 @@
                             infoWindow.open(map, marker);
                         });
                     }
-                    console.log(placemarkContent);
                     addInfoWindow(marker, placemarkContent);
                 }
             }

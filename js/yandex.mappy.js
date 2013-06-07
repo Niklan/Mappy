@@ -101,7 +101,7 @@
             }
 
             // Array Geocoding addresses and coordinates, as well as adding labels.
-            if (address.length > 1) {
+            if (address.length > 0) {
                 var geocoding_coord;
                 for (var i = 0; i < address.length; i++) {
                     // Prepare balloon content.

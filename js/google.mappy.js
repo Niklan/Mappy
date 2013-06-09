@@ -18,7 +18,7 @@
         // The scale of the map.
         var zoom = parseInt($("google").attr("zoom"));
         // Zoom control.
-        var zoomControl = $("google").attr("zoom_control") == "false" ? false : true;
+        var zoomControl = $("google").attr("zoomControl") == "false" ? false : true;
         // The initial enabled/disabled state of the Street View Pegman control.
         var streetViewControl = $("google").attr("streetViewControl") == "false" ? false : true;
         // The initial enabled/disabled state of the Map type control.

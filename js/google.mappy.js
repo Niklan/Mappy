@@ -17,6 +17,8 @@
         var height = $("google").attr("height");
         // The scale of the map.
         var zoom = parseInt($("google").attr("zoom"));
+        // Map type
+        var type = $("google").attr("type") ? $("google").attr("type") : "ROADMAP";
         // Zoom control.
         var zoomControl = $("google").attr("zoomControl") == "false" ? false : true;
         // The initial enabled/disabled state of the Street View Pegman control.
@@ -58,7 +60,7 @@
                 streetViewControl: streetViewControl,
                 panControl: panControl,
                 center: new google.maps.LatLng(address_lat, address_lng),
-                mapTypeId: google.maps.MapTypeId.ROADMAP
+                mapTypeId: google.maps.MapTypeId[type]
             };
 
             // Create a map.

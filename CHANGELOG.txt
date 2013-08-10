@@ -1,2 +1,5 @@
-Pre-release version
+7.x-1.2
 -----------------
++ Added a new option for the scrollwheel google maps.
++ By xandeadx: Added new option type to google maps.
++ Fixed a bug where a tpl template files needed to write google, instead mappy: google. Now run both.

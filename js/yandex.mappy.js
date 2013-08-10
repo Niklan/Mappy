@@ -5,19 +5,19 @@
 
 (function($) {
     // Address at which the map is centered.
-    var address = $("yandex").attr("address").split(";");
+    var address = $("yandex, mappy\\:yandex").attr("address").split(";");
     // The latitude and longitude based on address.
     var address_coordinates;
     // Width of the map.
-    var width = $("yandex").attr("width");
+    var width = $("yandex, mappy\\:yandex").attr("width");
     // The height map.
-    var height = $("yandex").attr("height");
+    var height = $("yandex, mappy\\:yandex").attr("height");
     // The scale of the map.
-    var zoom = $("yandex").attr("zoom");
+    var zoom = $("yandex, mappy\\:yandex").attr("zoom");
     // Content for balloons.
-    var balloonContent = ($("yandex").attr("balloonContent")) ? $("yandex").attr("balloonContent").split(";") : false;
+    var balloonContent = ($("yandex, mappy\\:yandex").attr("balloonContent")) ? $("yandex, mappy\\:yandex").attr("balloonContent").split(";") : false;
     // Disable balloons.
-    var addressPlacemark = ($("yandex").attr("addressPlacemark") == "false") ? false : true;
+    var addressPlacemark = ($("yandex, mappy\\:yandex").attr("addressPlacemark") == "false") ? false : true;
 
     // Obtain the coordinates of the first address (for map center).
     $.ajax({
@@ -31,9 +31,9 @@
     // Generation of map.
     function create_map() {
         // Add id tag for apply map.
-        $("yandex").attr('id', 'map');
+        $("yandex, mappy\\:yandex").attr('id', 'map');
         // Add some ccs for map.
-        $("yandex").css({
+        $("yandex, mappy\\:yandex").css({
             'display': 'block',
             'width': width,
             'height': height
@@ -121,42 +121,42 @@
             }
 
             // The zoom button.
-            if ($("yandex").attr("zoomСontrol")) {
-                var zoom_control = $("yandex").attr("zoomСontrol").split(",");
+            if ($("yandex, mappy\\:yandex").attr("zoomСontrol")) {
+                var zoom_control = $("yandex, mappy\\:yandex").attr("zoomСontrol").split(",");
                 myMap.controls
                     .add('zoomControl', { left: zoom_control[0], top: zoom_control[1] });
             }
 
             // Small button zoom.
-            if ($("yandex").attr("smallZoomControl")) {
-                var small_zoom_control = $("yandex").attr("smallZoomControl").split(",");
+            if ($("yandex, mappy\\:yandex").attr("smallZoomControl")) {
+                var small_zoom_control = $("yandex, mappy\\:yandex").attr("smallZoomControl").split(",");
                 myMap.controls
                     .add('smallZoomControl', { left: small_zoom_control[0], top: small_zoom_control[1] });
             }
 
             // List of type of map.
-            if ($("yandex").attr("mapTypeControl") == "true") {
+            if ($("yandex, mappy\\:yandex").attr("mapTypeControl") == "true") {
                 myMap.controls
                     .add('typeSelector');
             }
 
             // Map control.
-            if ($("yandex").attr("map_tools")) {
-                var map_tools = $("yandex").attr("map_tools").split(",");
+            if ($("yandex, mappy\\:yandex").attr("map_tools")) {
+                var map_tools = $("yandex, mappy\\:yandex").attr("map_tools").split(",");
                 myMap.controls
                     .add('mapTools', { left: map_tools[0], top: map_tools[1] });
             }
 
             // Button showing the traffic jams on the road.
-            if ($("yandex").attr("mapTrafficControl")) {
+            if ($("yandex, mappy\\:yandex").attr("mapTrafficControl")) {
                 var trafficControl = new ymaps.control.TrafficControl();
                 myMap.controls
                     .add(trafficControl);
             }
 
             // Create a route.
-            if ($("yandex").attr("route")) {
-                var route_array = $("yandex").attr("route").split(",")
+            if ($("yandex, mappy\\:yandex").attr("route")) {
+                var route_array = $("yandex, mappy\\:yandex").attr("route").split(",")
                 var router;
                 $("#" + route_array[0]).click(function() {
                     // Address 'from'.

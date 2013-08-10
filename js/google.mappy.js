@@ -7,28 +7,30 @@
     // Call Google.Maps API v3.
     google.load("maps", "3", {other_params:'sensor=false', callback: function(){
         // Address at which the map is centered.
-        var address = $("google").attr("address").split(";");
+        var address = $("google, mappy\\:google").attr("address").split(";");
         // The latitude and longitude based on address.
         var address_lat;
         var address_lng;
         // Width of the map.
-        var width = $("google").attr("width");
+        var width = $("google, mappy\\:google").attr("width");
         // The height map.
-        var height = $("google").attr("height");
+        var height = $("google, mappy\\:google").attr("height");
         // The scale of the map.
-        var zoom = parseInt($("google").attr("zoom"));
+        var zoom = parseInt($("google, mappy\\:google").attr("zoom"));
         // Map type
-        var type = $("google").attr("type") ? $("google").attr("type") : "ROADMAP";
+        var type = $("google, mappy\\:google").attr("type") ? $("google, mappy\\:google").attr("type") : "ROADMAP";
         // Zoom control.
-        var zoomControl = $("google").attr("zoomControl") == "false" ? false : true;
+        var zoomControl = $("google, mappy\\:google").attr("zoomControl") == "false" ? false : true;
         // The initial enabled/disabled state of the Street View Pegman control.
-        var streetViewControl = $("google").attr("streetViewControl") == "false" ? false : true;
+        var streetViewControl = $("google, mappy\\:google").attr("streetViewControl") == "false" ? false : true;
         // The initial enabled/disabled state of the Map type control.
-        var mapTypeControl = $("google").attr("mapTypeControl") == "false" ? false : true;
+        var mapTypeControl = $("google, mappy\\:google").attr("mapTypeControl") == "false" ? false : true;
         // The enabled/disabled state of the Pan control.
-        var panControl = $("google").attr("panControl") == "false" ? false : true;
+        var panControl = $("google, mappy\\:google").attr("panControl") == "false" ? false : true;
         // Content for balloons.
-        var balloonContent = ($("google").attr("balloonContent")) ? $("google").attr("balloonContent").split(";") : false;
+        var balloonContent = ($("google, mappy\\:google").attr("balloonContent")) ? $("google, mappy\\:google").attr("balloonContent").split(";") : false;
+        // The enabled/disabled state of scrollwheel.
+        var scrollWheel = $("google, mappy\\:google").attr("scrollwheel") == "false" ? false : true;
 
         // Obtain the coordinates of the first address (for map center).
         $.ajax({
@@ -44,9 +46,9 @@
         var map;
         function initialize() {
             // Add id tag for apply map.
-            $("google").attr('id', 'map');
+            $("google, mappy\\:google").attr('id', 'map');
             // Add some ccs for map.
-            $("google").css({
+            $("google, mappy\\:google").css({
                 'display': 'block',
                 'width': width,
                 'height': height
@@ -60,7 +62,8 @@
                 streetViewControl: streetViewControl,
                 panControl: panControl,
                 center: new google.maps.LatLng(address_lat, address_lng),
-                mapTypeId: google.maps.MapTypeId[type]
+                mapTypeId: google.maps.MapTypeId[type],
+                scrollwheel: scrollWheel
             };
 
             // Create a map.
@@ -68,7 +71,7 @@
                 mapOptions);
 
             // Add markers on the map.
-            if ($("google").attr("addressPlacemark") != "false") {
+            if ($("google, mappy\\:google").attr("addressPlacemark") != "false") {
                 for (var i=0; i < address.length; i++) {
                     var placemarkLat;
                     var placemarkLng;

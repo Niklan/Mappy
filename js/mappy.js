@@ -6,14 +6,14 @@
 (function($) {
     $(document).ready(function() {
         // If used Yandex.Map load script.
-        if ($('body *').is('yandex')) {
+        if ($("body *").is("yandex") || $("mappy\\:yandex")) {
             // First we connect Yandex.Maps API script.
             $.getScript("http://api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU", function() {
                 // If script loaded, then load our script.
                 $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.mappy.js");
             });
         }
-        if ($('body *').is('google')) {
+        if ($("body *").is("google") || $("mappy\\:google")) {
             $.getScript("/" + Drupal.settings.mappy_location + "/js/google.mappy.js");
         }
     });

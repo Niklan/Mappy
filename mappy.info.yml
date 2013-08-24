@@ -1,0 +1,4 @@
+name: Mappy
+type: module
+description: 'Allows you to display maps on the site.'
+core: 8.x

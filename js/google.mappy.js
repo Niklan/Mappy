@@ -3,9 +3,9 @@
  * This is script for Yandex.Maps.
  */
 
-(function($) {
+(function ($) {
     // Call Google.Maps API v3.
-    google.load("maps", "3", {other_params:'sensor=false', callback: function(){
+    google.load("maps", "3", {other_params: 'sensor=false', callback: function () {
         // Address at which the map is centered.
         var address = $("google, mappy\\:google").attr("address").split(";");
         // The latitude and longitude based on address.
@@ -31,11 +31,13 @@
         var balloonContent = ($("google, mappy\\:google").attr("balloonContent")) ? $("google, mappy\\:google").attr("balloonContent").split(";") : false;
         // The enabled/disabled state of scrollwheel.
         var scrollWheel = $("google, mappy\\:google").attr("scrollwheel") == "false" ? false : true;
+        // The enable/disable clusters.
+        var cluster = $("google, mappy\\:google").attr("clusters") == "true" ? true : false;
 
         // Obtain the coordinates of the first address (for map center).
         $.ajax({
             url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + address[0] + '&sensor=false',
-            success: function(data){
+            success: function (data) {
                 address_lat = data.results[0].geometry.location.lat;
                 address_lng = data.results[0].geometry.location.lng;
                 initialize();
@@ -44,6 +46,7 @@
         });
 
         var map;
+
         function initialize() {
             // Add id tag for apply map.
             $("google, mappy\\:google").attr('id', 'map');
@@ -72,7 +75,9 @@
 
             // Add markers on the map.
             if ($("google, mappy\\:google").attr("addressPlacemark") != "false") {
-                for (var i=0; i < address.length; i++) {
+                // We use markers only for cluster for now.
+                var markers = [];
+                for (var i = 0; i < address.length; i++) {
                     var placemarkLat;
                     var placemarkLng;
                     var placemarkAddress;
@@ -80,7 +85,7 @@
 
                     $.ajax({
                         url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + address[i] + '&sensor=false',
-                        success: function(data){
+                        success: function (data) {
                             placemarkLat = data.results[0].geometry.location.lat;
                             placemarkLng = data.results[0].geometry.location.lng;
                             placemarkAddress = data.results[0].address_components[1].long_name + " " + data.results[0].address_components[0].long_name;
@@ -94,6 +99,7 @@
                         map: map,
                         title: placemarkAddress
                     });
+                    markers.push(marker);
 
                     // Add balloon with content.
                     function addInfoWindow(marker, message) {
@@ -107,8 +113,14 @@
                             infoWindow.open(map, marker);
                         });
                     }
+
                     addInfoWindow(marker, placemarkContent);
                 }
+
+                if (cluster) {
+                    var markerCluster = new MarkerClusterer(map, markers);
+                }
+
             }
         }
     }});

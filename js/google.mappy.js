@@ -1,6 +1,6 @@
 /**
  * @file
- * This is script for Yandex.Maps.
+ * This is script for Google.Maps.
  */
 
 (function ($) {
@@ -12,11 +12,11 @@
         var address_lat;
         var address_lng;
         // Width of the map.
-        var width = $("google, mappy\\:google").attr("width");
+        var width = $("google, mappy\\:google").attr("width") > 0 ? $("google, mappy\\:google").attr("width") : 640;
         // The height map.
-        var height = $("google, mappy\\:google").attr("height");
+        var height = $("google, mappy\\:google").attr("height") > 0 ? $("google, mappy\\:google").attr("height") : 480;
         // The scale of the map.
-        var zoom = parseInt($("google, mappy\\:google").attr("zoom"));
+        var zoom = $("google, mappy\\:google").attr("zoom") > 0 ? $("google, mappy\\:google").attr("zoom") : 17;
         // Map type
         var type = $("google, mappy\\:google").attr("type") ? $("google, mappy\\:google").attr("type") : "ROADMAP";
         // Zoom control.

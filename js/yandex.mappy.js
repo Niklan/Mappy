@@ -3,17 +3,17 @@
  * This is script for Yandex.Maps.
  */
 
-(function($) {
+(function ($) {
     // Address at which the map is centered.
     var address = $("yandex, mappy\\:yandex").attr("address").split(";");
     // The latitude and longitude based on address.
     var address_coordinates;
     // Width of the map.
-    var width = $("yandex, mappy\\:yandex").attr("width");
+    var width = $("yandex, mappy\\:yandex").attr("width") > 0 ? $("yandex, mappy\\:yandex").attr("width") : 640;
     // The height map.
-    var height = $("yandex, mappy\\:yandex").attr("height");
+    var height = $("yandex, mappy\\:yandex").attr("height") > 0 ? $("yandex, mappy\\:yandex").attr("height") : 480;
     // The scale of the map.
-    var zoom = $("yandex, mappy\\:yandex").attr("zoom");
+    var zoom = $("yandex, mappy\\:yandex").attr("zoom") > 0 ? $("yandex, mappy\\:yandex").attr("zoom") : 17;
     // Content for balloons.
     var balloonContent = ($("yandex, mappy\\:yandex").attr("balloonContent")) ? $("yandex, mappy\\:yandex").attr("balloonContent").split(";") : false;
     // Disable balloons.
@@ -22,7 +22,7 @@
     // Obtain the coordinates of the first address (for map center).
     $.ajax({
         url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + address[0] + '&result=1',
-        success: function(data){
+        success: function (data) {
             address_coordinates = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
             create_map();
         }
@@ -76,7 +76,7 @@
         // Wait until download API. _mm._sc
         ymaps.ready(init);
 
-        function init () {
+        function init() {
             // Create a new instance of the map.
             myMap = new ymaps.Map('map', {
                 // Coordinates of the center of the map.
@@ -95,7 +95,7 @@
                     hintContent: address
                 }, {
                     preset: 'twirl#blueIcon'
-                })
+                });
                 myMap.geoObjects
                     .add(balloon);
             }
@@ -110,7 +110,7 @@
                     }
                     $.ajax({
                         url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + address[i] + '&result=1',
-                        success: function(data){
+                        success: function (data) {
                             geocoding_coord = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
                             var address = data.response.GeoObjectCollection.featureMember[0].GeoObject.name;
                             (addressPlacemark) ? addBalloon(geocoding_coord, address, content) : false;
@@ -156,9 +156,9 @@
 
             // Create a route.
             if ($("yandex, mappy\\:yandex").attr("route")) {
-                var route_array = $("yandex, mappy\\:yandex").attr("route").split(",")
+                var route_array = $("yandex, mappy\\:yandex").attr("route").split(",");
                 var router;
-                $("#" + route_array[0]).click(function() {
+                $("#" + route_array[0]).click(function () {
                     // Address 'from'.
                     var route_address = $("#" + route_array[1]).val();
 
@@ -172,27 +172,27 @@
                         // Autozooming.
                         mapStateAutoApply: true
                     }).then(function (route) {
-                        // Clear previous route.
-                        if (router) {
-                            myMap.geoObjects
-                                .remove(router);
-                        }
-                        // Route from API.
-                        router = route;
-                        // Draw route.
-                        myMap.geoObjects.add(router);
-                        // Get route points .
-                        var points = route.getWayPoints();
-                        // Bubble type.
-                        points.options.set('preset', 'twirl#redStretchyIcon');
-                        // Icon and text of 'From' bubble.
-                        points.get(0).properties.set('iconContent', 'Ваше местоположение');
-                        // Icon and text of 'Where' bubble.
-                        points.get(1).properties.set('iconContent', 'Мы здесь!');
-                    }, function (error) {
-                        // Display error if exept.
-                        alert("Error: " + error.message);
-                    });
+                            // Clear previous route.
+                            if (router) {
+                                myMap.geoObjects
+                                    .remove(router);
+                            }
+                            // Route from API.
+                            router = route;
+                            // Draw route.
+                            myMap.geoObjects.add(router);
+                            // Get route points .
+                            var points = route.getWayPoints();
+                            // Bubble type.
+                            points.options.set('preset', 'twirl#redStretchyIcon');
+                            // Icon and text of 'From' bubble.
+                            points.get(0).properties.set('iconContent', 'Ваше местоположение');
+                            // Icon and text of 'Where' bubble.
+                            points.get(1).properties.set('iconContent', 'Мы здесь!');
+                        }, function (error) {
+                            // Display error if exept.
+                            alert("Error: " + error.message);
+                        });
                 });
             }
         }

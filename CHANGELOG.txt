@@ -1,3 +1,11 @@
+7.x-dev
+-----------------
++ New bool parameter "clusters". Added by josgir.
++ Added token and filter.
++ Added default value for zoom, width and height (if user don't set).
++ Code improvements and optimisation.
++ Google JSAPI now load only when needed.
+
 7.x-1.2
 -----------------
 + Added a new option for the scrollwheel google maps.

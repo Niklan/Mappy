@@ -2,3 +2,4 @@ name = Mappy
 description = Allows you to display maps on the site.
 configure = admin/structure/mappy
 core = 7.x
+scripts[] = js/mappy.js

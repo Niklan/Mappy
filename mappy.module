@@ -6,12 +6,49 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function mappy_menu() {
+  // Settings page.
+  $items['admin/config/content/mappy/settings'] = array(
+    'title' => 'Mappy settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mappy_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'mappy.admin.inc',
+    'file path' => drupal_get_path('module', 'mappy'),
+  );
+
+  return $items;
+}
+
+/**
  * Implements hook_page_build().
  */
 function mappy_page_build(&$page) {
-  // Add module path for script locations.
-  // We use this parameter to attach scripts when they needed.
-  drupal_add_js(array('mappy_location' => drupal_get_path('module', 'mappy')), 'setting');
+  // Patterns for matching.
+  $pages = drupal_strtolower(variable_get('mappy_load_pages_path'));
+  // Convert path alias to lowercase.
+  $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+  // Compare pages to aliased path.
+  $page_match = drupal_match_path($path, $pages);
+  // Compare for original paths.
+  if ($path != $_GET['q']) {
+    $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
+  }
+  // Type of the matching path.
+  // 0 - All pages except those listed.
+  // 1 - Only the listed pages.
+  $match_type = variable_get('mappy_load_pages_match', 0);
+
+  // First comparsion for 'All pages except those listed'.
+  // Second for 'Only the listed pages'.
+  if ($match_type == "0" && !$page_match || $match_type && $page_match) {
+    // Add module path for script locations.
+    // We use this parameter to attach scripts when they needed.
+    drupal_add_js(array('mappy_location' => drupal_get_path('module', 'mappy')), 'setting');
+    drupal_add_js(drupal_get_path('module', 'mappy') . '/js/mappy.js');
+  }
 }
 
 /**
@@ -32,6 +69,7 @@ function mappy_filter_info() {
 
 /**
  * Prepare text to filtering.
+ *
  * On this stage, we replace token [mappy] on html tag.
  */
 function _mappy_filter_prepare($text, $filter) {
@@ -39,10 +77,10 @@ function _mappy_filter_prepare($text, $filter) {
   $pattern = "/\\[mappy(\\:(.+))?( .+)?\\]/isU";
   preg_match_all($pattern, $text, $matches);
 
-  // In finded tokens, we get parameters.
+  // In founded tokens, we get parameters.
   foreach ($matches[0] as $ci => $token) {
     $pattern = "/\\s+([a-zA-Z_]+)\\:(\\s+)?('(.*)'|([0-9a-zA-Z-а-яА-Я\\-\\.\\,]+))/i";
-    preg_match_all($pattern, $text, $parameters);
+    preg_match_all($pattern, $token, $parameters);
     // And write parameters to an array.
     foreach ($parameters['0'] as $key => $name) {
       // Additional, we remove quotes.
@@ -66,10 +104,16 @@ function _mappy_filter_prepare($text, $filter) {
   return $text;
 }
 
+/**
+ * Return prepared tag.
+ */
 function _mappy_filter_process($text, $filter) {
   return $text;
 }
 
+/**
+ * Information about our tag in filter description.
+ */
 function _mappy_filter_tips($filter, $format, $long = FALSE) {
   return t('<em>&lt;mappy /&gt;</em> will be replaced with map.');
 }

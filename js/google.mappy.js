@@ -12,9 +12,9 @@
         var address_lat;
         var address_lng;
         // Width of the map.
-        var width = $("google, mappy\\:google").attr("width") > 0 ? $("google, mappy\\:google").attr("width") : 640;
+        var width = $("google, mappy\\:google").attr("width") > 0 ? $("google, mappy\\:google").attr("width") : Drupal.settings.mappy_google_width;
         // The height map.
-        var height = $("google, mappy\\:google").attr("height") > 0 ? $("google, mappy\\:google").attr("height") : 480;
+        var height = $("google, mappy\\:google").attr("height") > 0 ? $("google, mappy\\:google").attr("height") : Drupal.settings.mappy_google_height;
         // The scale of the map.
         var zoom = $("google, mappy\\:google").attr("zoom") > 0 ? $("google, mappy\\:google").attr("zoom") : 17;
         // Map type

@@ -9,9 +9,9 @@
     // The latitude and longitude based on address.
     var address_coordinates;
     // Width of the map.
-    var width = $("yandex, mappy\\:yandex").attr("width") > 0 ? $("yandex, mappy\\:yandex").attr("width") : 640;
+    var width = $("yandex, mappy\\:yandex").attr("width") > 0 ? $("yandex, mappy\\:yandex").attr("width") : Drupal.settings.mappy_yandex_width;
     // The height map.
-    var height = $("yandex, mappy\\:yandex").attr("height") > 0 ? $("yandex, mappy\\:yandex").attr("height") : 480;
+    var height = $("yandex, mappy\\:yandex").attr("height") > 0 ? $("yandex, mappy\\:yandex").attr("height") : Drupal.settings.mappy_yandex_height;
     // The scale of the map.
     var zoom = $("yandex, mappy\\:yandex").attr("zoom") > 0 ? $("yandex, mappy\\:yandex").attr("zoom") : 17;
     // Content for balloons.

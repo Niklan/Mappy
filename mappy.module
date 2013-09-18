@@ -44,9 +44,14 @@ function mappy_page_build(&$page) {
   // First comparsion for 'All pages except those listed'.
   // Second for 'Only the listed pages'.
   if ($match_type == "0" && !$page_match || $match_type && $page_match) {
-    // Add module path for script locations.
-    // We use this parameter to attach scripts when they needed.
-    drupal_add_js(array('mappy_location' => drupal_get_path('module', 'mappy')), 'setting');
+    // Add settings to js file.
+    drupal_add_js(array(
+      'mappy_location' => drupal_get_path('module', 'mappy'),
+      'mappy_google_width' => variable_get('mappy_google_width', 640),
+      'mappy_google_height' => variable_get('mappy_google_height', 480),
+      'mappy_yandex_width' => variable_get('mappy_yandex_width', 640),
+      'mappy_yandex_height' => variable_get('mappy_yandex_height', 480),
+    ), 'setting');
     drupal_add_js(drupal_get_path('module', 'mappy') . '/js/mappy.js');
   }
 }

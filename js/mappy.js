@@ -18,7 +18,7 @@
         if ($("google").length || $("mappy\\:google").length) {
             // First, we load main Google script.
             $.getScript("https://www.google.com/jsapi", function () {
-                // If enabled clusterer, we must load additional library.
+                // If enabled clusters, we must load additional library.
                 if ($("google, mappy\\:google").attr("clusters")) {
                     $.getScript("http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js");
                 }

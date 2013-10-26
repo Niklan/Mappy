@@ -7,6 +7,8 @@
 + Google JSAPI now load only when needed.
 + Added administrator interface.
 + Added feature for control loading Mappy.js
++ Reworked Google Maps JS.
++ Support for multiply maps of Google on the same page.
 
 7.x-1.2
 -----------------

@@ -1,6 +1,9 @@
 /**
  * @file
  * This is script for Google.Maps.
+ *
+ * We use get(0).getAttribute instead of attr() because Drupal 7 jquery is
+ * version 1.4. In this version attr() case sensitive, we don't need this.
  */
 
 (function ($) {
@@ -18,32 +21,32 @@
             var mappy_instance = $(this);
             mappy[index] = {
                 // Address of map.
-                address: mappy_instance.attr("address").split(";"),
+                address: mappy_instance.get(0).getAttribute("address").split(";"),
                 // Lat. & long. center of map. We set a little bit later.
                 center_lat: "",
                 center_lng: "",
                 // Width of the map. If not present, we get default value from settings.
-                width: mappy_instance.attr("width") > 0 ? mappy_instance.attr("width") : Drupal.settings.mappy_google_width,
+                width: mappy_instance.get(0).getAttribute("width") > 0 ? mappy_instance.get(0).getAttribute("width") : Drupal.settings.mappy_google_width,
                 // Height of the map. If not present, we get default value from settings.
-                height: mappy_instance.attr("height") > 0 ? mappy_instance.attr("height") : Drupal.settings.mappy_google_height,
+                height: mappy_instance.get(0).getAttribute("height") > 0 ? mappy_instance.get(0).getAttribute("height") : Drupal.settings.mappy_google_height,
                 // Scale of the map.
-                zoom: mappy_instance.attr("zoom") > 0 ? parseInt(mappy_instance.attr("zoom")) : 17,
+                zoom: mappy_instance.get(0).getAttribute("zoom") > 0 ? parseInt(mappy_instance.get(0).getAttribute("zoom")) : 17,
                 // The map type.
-                type: mappy_instance.attr("type") ? mappy_instance.attr("type") : "ROADMAP",
+                type: mappy_instance.get(0).getAttribute("type") ? mappy_instance.get(0).getAttribute("type") : "ROADMAP",
                 // If TRUE: display zoom control.
-                zoomControl: mappy_instance.attr("zoomControl") == "false" ? false : true,
+                zoomControl: mappy_instance.get(0).getAttribute("zoomControl") == "false" ? false : true,
                 // If TRUE: allow users to use street view.
-                streetViewControl: mappy_instance.attr("streetViewControl") == "false" ? false : true,
+                streetViewControl: mappy_instance.get(0).getAttribute("streetViewControl") == "false" ? false : true,
                 // If TRUE: allow users to select map layer.
-                mapTypeControl: mappy_instance.attr("mapTypeControl") == "false" ? false : true,
+                mapTypeControl: mappy_instance.get(0).getAttribute("mapTypeControl") == "false" ? false : true,
                 // If TRUE: display circle for move the map.
-                panControl: mappy_instance.attr("panControl") == "false" ? false : true,
+                panControl: mappy_instance.get(0).getAttribute("panControl") == "false" ? false : true,
                 // Content for balloons.
                 balloonContent: (mappy_instance.attr("balloonContent")) ? mappy_instance.attr("balloonContent").split(";") : false,
                 // If FALSE: 'scrolling' page, instead of map zooming.
-                scrollWheel: mappy_instance.attr("scrollwheel") == "false" ? false : true,
+                scrollWheel: mappy_instance.get(0).getAttribute("scrollwheel") == "false" ? false : true,
                 // If TRUE: balloons will merge into one big, before they zoomed enough for seeing separately.
-                cluster: mappy_instance.attr("clusters") == "true" ? true : false
+                cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false
             };
 
             // Obtain the coordinates of the first address (for map center).

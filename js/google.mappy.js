@@ -66,7 +66,7 @@
             // Initialization of the map.
             function initialize() {
                 // Add id tag for apply map.
-                mappy_instance.attr('id', 'mappy-' + [index]);
+                mappy_instance.attr('id', 'mappy-google-' + [index]);
                 mappy_instance.attr('class', 'mappy google');
                 // Add some ccs for map.
                 mappy_instance.css({

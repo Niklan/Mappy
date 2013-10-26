@@ -8,7 +8,8 @@
 + Added administrator interface.
 + Added feature for control loading Mappy.js
 + Reworked Google Maps JS.
-+ Support for multiply maps of Google on the same page.
++ Support for multiply maps on the same page.
++ Attributes no more case sensitive.
 
 7.x-1.2
 -----------------

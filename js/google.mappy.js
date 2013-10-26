@@ -89,7 +89,7 @@
                 };
 
                 // Create a map.
-                maps[index].map = new google.maps.Map(document.getElementById('mappy-' + [index]), maps[index].mapOptions);
+                maps[index].map = new google.maps.Map(document.getElementById('mappy-google-' + [index]), maps[index].mapOptions);
 
                 // Add markers on the map.
                 if (mappy_instance.attr("addressPlacemark") != "false") {

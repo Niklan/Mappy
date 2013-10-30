@@ -64,7 +64,7 @@ function mappy_page_build(&$page) {
 function mappy_filter_info() {
   $filters['filter_mappy'] = array(
     'title' => t('Mappy filter.'),
-    'description' => t('Every &lt;mappy /&gt; tag will be replaced with map.'),
+    'description' => t('Every [mappy:service address:\'address\'] token will be replaced with map.'),
     'prepare callback' => '_mappy_filter_prepare',
     'process callback' => '_mappy_filter_process',
     'tips callback' => '_mappy_filter_tips',
@@ -84,13 +84,16 @@ function _mappy_filter_prepare($text, $filter) {
 
   // In founded tokens, we get parameters.
   foreach ($matches[0] as $ci => $token) {
-    $pattern = "/\\s+([a-zA-Z_]+)\\:(\\s+)?('(.*)'|([0-9a-zA-Z-а-яА-Я\\-\\.\\,]+))/i";
-    preg_match_all($pattern, $token, $parameters);
+    // This is the real magic of Hogwarts. I spent totaly about 5-6 hours
+    // to make this pattern work.
+    preg_match_all("/(\\s)+(\\w+):(((\\s)*(\\w+))|(\\'(?:\\.|[^\\'\\\\])*\\'))/i", $token, $parameters);
     // And write parameters to an array.
-    foreach ($parameters['0'] as $key => $name) {
+    $att = array();
+    foreach ($parameters['2'] as $key => $name) {
       // Additional, we remove quotes.
-      $att[$parameters['1'][$key]] = str_replace("'", "", $parameters['3'][$key]);
+      $att[$parameters['2'][$key]] = str_replace("'", "", $parameters['3'][$key]);
     }
+
     // Now we generate HTML Mappy tag.
     // Which service are using. Google or Yandex.
     $service = $matches[2][$ci];
@@ -99,8 +102,10 @@ function _mappy_filter_prepare($text, $filter) {
     foreach ($att as $key => $value) {
       $attributes .= " {$key}=\"{$value}\"";
     }
+
     // And add all to tag.
-    $tag = "<mappy:{$service} {$attributes}></mappy:{$service}>";
+    // Without '<mappy:' because drupal remove colons from tag.
+    $tag = "<{$service} {$attributes}></{$service}>";
 
     // Replace token for tag.
     $text = str_replace($token, $tag, $text);
@@ -120,5 +125,5 @@ function _mappy_filter_process($text, $filter) {
  * Information about our tag in filter description.
  */
 function _mappy_filter_tips($filter, $format, $long = FALSE) {
-  return t('<em>&lt;mappy /&gt;</em> will be replaced with map.');
+  return t('Every [mappy:service address:\'address\'] will be replaced with map.');
 }

@@ -10,6 +10,8 @@
 + Reworked Google Maps JS.
 + Support for multiply maps on the same page.
 + Attributes no more case sensitive.
++ Fix to filter and description.
++ Change algorithm for select attributes and values in filter.
 
 7.x-1.2
 -----------------

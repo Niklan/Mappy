@@ -1,200 +1,224 @@
 /**
  * @file
- * This is script for Yandex.Maps.
+ * This is script for Yandex.Maps 2.0 (old version).
+ *
+ * We use get(0).getAttribute instead of attr() because Drupal 7 jquery is
+ * version 1.4. In this version attr() case sensitive, we don't need this.
  */
 
-(function($) {
-    // Address at which the map is centered.
-    var address = $("yandex, mappy\\:yandex").attr("address").split(";");
-    // The latitude and longitude based on address.
-    var address_coordinates;
-    // Width of the map.
-    var width = $("yandex, mappy\\:yandex").attr("width");
-    // The height map.
-    var height = $("yandex, mappy\\:yandex").attr("height");
-    // The scale of the map.
-    var zoom = $("yandex, mappy\\:yandex").attr("zoom");
-    // Content for balloons.
-    var balloonContent = ($("yandex, mappy\\:yandex").attr("balloonContent")) ? $("yandex, mappy\\:yandex").attr("balloonContent").split(";") : false;
-    // Disable balloons.
-    var addressPlacemark = ($("yandex, mappy\\:yandex").attr("addressPlacemark") == "false") ? false : true;
-
-    // Obtain the coordinates of the first address (for map center).
-    $.ajax({
-        url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + address[0] + '&result=1',
-        success: function(data){
-            address_coordinates = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
-            create_map();
-        }
-    });
-
-    // Generation of map.
-    function create_map() {
-        // Add id tag for apply map.
-        $("yandex, mappy\\:yandex").attr('id', 'map');
-        // Add some ccs for map.
-        $("yandex, mappy\\:yandex").css({
-            'display': 'block',
-            'width': width,
-            'height': height
+(function ($) {
+    // Just optimisation for clear reading code.
+    var mappy_tag = $("yandex, mappy\\:yandex");
+    // Create own array for storage information for each map (from tag).
+    var mappy = [];
+    // Create array of maps.
+    var maps = []
+    // We apply map for each tag founded on page.
+    mappy_tag.each(function (index) {
+        // Instance of tag.
+        var mappy_instance = $(this);
+        mappy[index] = {
+            // Address of map.
+            address: mappy_instance.get(0).getAttribute("address").split(";"),
+            // Lat. & long. center of map. We set a little bit later.
+            centerCoordinates: "",
+            // Width of the map. If not present, we get default value from settings.
+            width: mappy_instance.get(0).getAttribute("width") > 0 ? mappy_instance.get(0).getAttribute("width") : Drupal.settings.mappy_yandex_width,
+            // Height of the map. If not present, we get default value from settings.
+            height: mappy_instance.get(0).getAttribute("height") > 0 ? mappy_instance.get(0).getAttribute("height") : Drupal.settings.mappy_yandex_height,
+            // Scale of the map.
+            zoom: mappy_instance.get(0).getAttribute("zoom") > 0 ? parseInt(mappy_instance.get(0).getAttribute("zoom")) : 17,
+            // Zoom button (X,Y).
+            zoomControl: mappy_instance.get(0).getAttribute("zoomControl") ? mappy_instance.get(0).getAttribute("zoomControl").split(",") : false,
+            // Small zoom button (X,Y).
+            smallZoomControl: mappy_instance.get(0).getAttribute("smallZoomControl") ? mappy_instance.get(0).getAttribute("smallZoomControl").split(",") : false,
+            // Disable balloons.
+            addressPlacemark: (mappy_instance.get(0).getAttribute("addressPlacemark") == "false") ? false : true,
+            // If TRUE: users can choose layers.
+            mapTypeControl: mappy_instance.get(0).getAttribute("mapTypeControl") == "true" ? true : false,
+            // If TRUE: display button for controlling jams on road.
+            mapTrafficControl: mappy_instance.get(0).getAttribute("mapTrafficControl") == "true" ? true : false,
+            // Content for balloons.
+            balloonContent: (mappy_instance.attr("balloonContent")) ? mappy_instance.attr("balloonContent").split(";") : false,
+            // Route controllers.
+            route: mappy_instance.get(0).getAttribute("route") ? mappy_instance.get(0).getAttribute("route").split(",") : false,
+            // If TRUE: balloons will merge into one big, before they zoomed enough for seeing separately.
+            cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false
+        };
+        console.log(mappy);
+        // Obtain the coordinates of the first address (for map center).
+        $.ajax({
+            url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + mappy[index].address[0] + '&result=1',
+            success: function (data) {
+                mappy[index].centerCoordinates = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
+                create_map();
+            }
         });
 
-        // Class.
-        function MultiGeocoder(options) {
-            this._options = options || {};
-        }
-
-        // Multigeocoding.
-        MultiGeocoder.prototype.geocode = function (requests, options) {
-            var self = this,
-                opts = ymaps.util.extend({}, self._options, options),
-                size = requests.length,
-                promise = new ymaps.util.Promise(),
-                result = [],
-                geoObjects = new ymaps.GeoObjectArray();
-
-            requests.forEach(function (request, index) {
-                ymaps.geocode(request, opts).then(
-                    function (response) {
-                        var geoObject = response.geoObjects.get(0);
-
-                        geoObject && (result[index] = geoObject);
-                        --size || (result.forEach(geoObjects.add, geoObjects), promise.resolve({ geoObjects: geoObjects }));
-                    },
-                    function (err) {
-                        promise.reject(err);
-                    }
-                );
+        // Generation of map.
+        function create_map() {
+            // Add id tag for apply map.
+            mappy_instance.attr('id', 'mappy-yandex-' + [index]);
+            mappy_instance.attr('class', 'mappy yandex');
+            // Add some ccs for map.
+            mappy_instance.css({
+                'display': 'block',
+                'width': mappy[index].width,
+                'height': mappy[index].height
             });
 
-            return promise;
-        };
-
-        // Map variable.
-        var myMap;
-
-        // Wait until download API. _mm._sc
-        ymaps.ready(init);
-
-        function init () {
-            // Create a new instance of the map.
-            myMap = new ymaps.Map('map', {
-                // Coordinates of the center of the map.
-                center: address_coordinates,
-                // The scale of the map.
-                zoom: zoom
-            });
-
-            // Add balloon on map;
-            function addBalloon(balloonCoordinates, balloonAddress, balloonContent) {
-                var coords = balloonCoordinates;
-                var address = balloonAddress;
-                var content = balloonContent;
-                balloon = new ymaps.Placemark(coords, {
-                    balloonContent: content,
-                    hintContent: address
-                }, {
-                    preset: 'twirl#blueIcon'
-                })
-                myMap.geoObjects
-                    .add(balloon);
+            // Class for multiple geocoding.
+            function MultiGeocoder(options) {
+                this._options = options || {};
             }
 
-            // Array Geocoding addresses and coordinates, as well as adding labels.
-            if (address.length > 0) {
-                var geocoding_coord;
-                for (var i = 0; i < address.length; i++) {
-                    // Prepare balloon content.
-                    if (balloonContent[i] != "undefined") {
-                        var content = balloonContent[i];
-                    }
-                    $.ajax({
-                        url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + address[i] + '&result=1',
-                        success: function(data){
-                            geocoding_coord = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
-                            var address = data.response.GeoObjectCollection.featureMember[0].GeoObject.name;
-                            (addressPlacemark) ? addBalloon(geocoding_coord, address, content) : false;
+            // Multigeocoding.
+            MultiGeocoder.prototype.geocode = function (requests, options) {
+                var self = this,
+                    opts = ymaps.util.extend({}, self._options, options),
+                    size = requests.length,
+                    promise = new ymaps.util.Promise(),
+                    result = [],
+                    geoObjects = new ymaps.GeoObjectArray();
+
+                requests.forEach(function (request, index) {
+                    ymaps.geocode(request, opts).then(
+                        function (response) {
+                            var geoObject = response.geoObjects.get(0);
+
+                            geoObject && (result[index] = geoObject);
+                            --size || (result.forEach(geoObjects.add, geoObjects), promise.resolve({ geoObjects: geoObjects }));
                         },
-                        async: false
+                        function (err) {
+                            promise.reject(err);
+                        }
+                    );
+                });
+
+                return promise;
+            };
+
+            // Prepare variable for our map.
+            maps[index];
+
+            // Wait until download API. _mm._sc
+            ymaps.ready(init);
+
+            function init() {
+                // Create a new instance of the map.
+                maps[index] = [];
+                maps[index].map = new ymaps.Map('mappy-yandex-' + [index], {
+                    // Coordinates of the center of the map.
+                    center: mappy[index].centerCoordinates,
+                    // The scale of the map.
+                    zoom: mappy[index].zoom
+                });
+
+                // Add balloon on map;
+                function addBalloon(balloonCoordinates, balloonAddress, balloonContent) {
+                    var coords = balloonCoordinates;
+                    var address = balloonAddress;
+                    var content = balloonContent;
+                    balloon = new ymaps.Placemark(coords, {
+                        balloonContent: content,
+                        hintContent: address
+                    }, {
+                        preset: 'twirl#blueIcon'
+                    });
+                    maps[index].map.geoObjects
+                        .add(balloon);
+                }
+
+                // Array Geocoding addresses and coordinates, as well as adding labels.
+                if (mappy[index].address.length > 0) {
+                    var geocoding_coord;
+                    for (var i = 0; i < mappy[index].address.length; i++) {
+                        // Prepare balloon content.
+                        if (mappy[index].balloonContent[i] != "undefined") {
+                            var content = mappy[index].balloonContent[i];
+                        }
+
+                        $.ajax({
+                            url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + mappy[index].address[i] + '&result=1',
+                            success: function (data) {
+                                geocoding_coord = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
+                                var address = data.response.GeoObjectCollection.featureMember[0].GeoObject.name;
+                                (mappy[index].addressPlacemark) ? addBalloon(geocoding_coord, address, content) : false;
+                            },
+                            async: false
+                        });
+                    }
+                }
+
+                // Zoom control (X,Y).
+                if (mappy[index].zoomControl) {
+                    maps[index].map.controls
+                        .add('zoomControl', { left: mappy[index].zoomControl[0], top: mappy[index].zoomControl[1] });
+                }
+
+                // Small zoom control (X,Y).
+                if (mappy[index].smallZoomControl) {
+                    maps[index].map.controls
+                        .add('smallZoomControl', { left: mappy[index].smallZoomControl[0], top: mappy[index].smallZoomControl[1] });
+                }
+
+                // Users can select layers.
+                if (mappy[index].mapTypeControl) {
+                    maps[index].map.controls
+                        .add('typeSelector');
+                }
+
+                // Button showing the traffic jams on the road.
+                if (mappy[index].mapTrafficControl) {
+                    maps[index].map.controls
+                        .add(new ymaps.control.TrafficControl());
+                }
+
+                // Create a route.
+                if (mappy[index].route) {
+                    var router;
+                    $("#" + mappy[index].route[0]).click(function () {
+                        // Address 'from'.
+                        var route_address = $("#" + mappy[index].route[1]).val();
+                        // End of route.
+                        var address_coordinates = mappy[index].centerCoordinates;
+
+                        // Generate route.
+                        ymaps.route([
+                            // Form.
+                            route_address,
+                            // Where.
+                            address_coordinates
+                        ], {
+                            // Autozooming.
+                            mapStateAutoApply: true
+                        }).then(function (route) {
+                                // Clear previous route.
+                                if (router) {
+                                    maps[index].map.geoObjects
+                                        .remove(router);
+                                }
+                                // Route from API.
+                                router = route;
+                                // Draw route.
+                                maps[index].map.geoObjects.add(router);
+                                // Get route points .
+                                var points = route.getWayPoints();
+                                // Bubble type.
+                                points.options.set('preset', 'twirl#redStretchyIcon');
+                                // Icon and text of 'From' bubble.
+                                points.get(0).properties.set('iconContent', 'Ваше местоположение');
+                                // Icon and text of 'Where' bubble.
+                                points.get(1).properties.set('iconContent', 'Мы здесь!');
+                            }, function (error) {
+                                // Display error if exept.
+                                alert("Error: " + error.message);
+                            });
                     });
                 }
             }
-
-            // The zoom button.
-            if ($("yandex, mappy\\:yandex").attr("zoomСontrol")) {
-                var zoom_control = $("yandex, mappy\\:yandex").attr("zoomСontrol").split(",");
-                myMap.controls
-                    .add('zoomControl', { left: zoom_control[0], top: zoom_control[1] });
-            }
-
-            // Small button zoom.
-            if ($("yandex, mappy\\:yandex").attr("smallZoomControl")) {
-                var small_zoom_control = $("yandex, mappy\\:yandex").attr("smallZoomControl").split(",");
-                myMap.controls
-                    .add('smallZoomControl', { left: small_zoom_control[0], top: small_zoom_control[1] });
-            }
-
-            // List of type of map.
-            if ($("yandex, mappy\\:yandex").attr("mapTypeControl") == "true") {
-                myMap.controls
-                    .add('typeSelector');
-            }
-
-            // Map control.
-            if ($("yandex, mappy\\:yandex").attr("map_tools")) {
-                var map_tools = $("yandex, mappy\\:yandex").attr("map_tools").split(",");
-                myMap.controls
-                    .add('mapTools', { left: map_tools[0], top: map_tools[1] });
-            }
-
-            // Button showing the traffic jams on the road.
-            if ($("yandex, mappy\\:yandex").attr("mapTrafficControl")) {
-                var trafficControl = new ymaps.control.TrafficControl();
-                myMap.controls
-                    .add(trafficControl);
-            }
-
-            // Create a route.
-            if ($("yandex, mappy\\:yandex").attr("route")) {
-                var route_array = $("yandex, mappy\\:yandex").attr("route").split(",")
-                var router;
-                $("#" + route_array[0]).click(function() {
-                    // Address 'from'.
-                    var route_address = $("#" + route_array[1]).val();
-
-                    // Generate route.
-                    ymaps.route([
-                        // Form.
-                        route_address,
-                        // Where.
-                        address_coordinates
-                    ], {
-                        // Autozooming.
-                        mapStateAutoApply: true
-                    }).then(function (route) {
-                        // Clear previous route.
-                        if (router) {
-                            myMap.geoObjects
-                                .remove(router);
-                        }
-                        // Route from API.
-                        router = route;
-                        // Draw route.
-                        myMap.geoObjects.add(router);
-                        // Get route points .
-                        var points = route.getWayPoints();
-                        // Bubble type.
-                        points.options.set('preset', 'twirl#redStretchyIcon');
-                        // Icon and text of 'From' bubble.
-                        points.get(0).properties.set('iconContent', 'Ваше местоположение');
-                        // Icon and text of 'Where' bubble.
-                        points.get(1).properties.set('iconContent', 'Мы здесь!');
-                    }, function (error) {
-                        // Display error if exept.
-                        alert("Error: " + error.message);
-                    });
-                });
-            }
         }
-    }
+    });
+
+
 })(jQuery);

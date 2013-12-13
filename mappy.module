@@ -6,13 +6,49 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function mappy_menu() {
+  $items['admin/config/content/mappy'] = array(
+    'title' => 'Mappy settings',
+    'route_name' => 'mappy.settings',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_library_info().
+ */
+function mappy_library_info() {
+  $config = config('mappy.settings');
+
+  $lib['mappy'] = array(
+    'js' => array(
+      drupal_get_path('module', 'mappy') . '/js/mappy.js' => array(
+        'type' => 'setting',
+        'data' => array(
+          'mappy_location' => drupal_get_path('module', 'mappy'),
+          'mappy_google_width' => $config->get('google.width'),
+          'mappy_google_height' => $config->get('google.height'),
+          'mappy_yandex_width' => $config->get('yandex.width'),
+          'mappy_yandex_height' => $config->get('yandex.height'),
+        ),
+      ),
+    ),
+    'dependencies' => array(
+      array('system', 'jquery'),
+      array('system', 'drupal'),
+      array('system', 'drupalSettings'),
+    ),
+  );
+
+  return $lib;
+}
+
+/**
  * Implements hook_page_build().
  */
 function mappy_page_build(&$page) {
-  // Attach our main JS to page.
-  drupal_add_js(drupal_get_path('module', 'mappy') . '/js/mappy.js');
-  // We call script on every page, but it start working only by request.
-  drupal_add_js('https://www.google.com/jsapi');
-  // Add module path for script locations.
-  drupal_add_js(array('mappy_location' => drupal_get_path('module', 'mappy')), 'setting');
+  drupal_add_library('mappy', 'mappy');
 }

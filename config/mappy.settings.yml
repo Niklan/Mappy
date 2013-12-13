@@ -1,0 +1,11 @@
+type: settings
+name: Default Mappy Settings
+description: 'Define default Mappy settings.'
+loading:
+  type: 0
+google:
+  width: 640
+  height: 480
+yandex:
+  width: 640
+  height: 480

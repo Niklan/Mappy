@@ -10,7 +10,7 @@
             // First we connect Yandex.Maps API script.
             $.getScript("http://api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU", function () {
                 // If script loaded, then load our script.
-                $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.mappy.js");
+                $.getScript("/" + drupalSettings.mappy.location + "/js/yandex.mappy.js");
             });
         }
 
@@ -23,7 +23,7 @@
                     $.getScript("http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js");
                 }
                 // Finally, we load our script for handle tag.
-                $.getScript("/" + Drupal.settings.mappy_location + "/js/google.mappy.js");
+                $.getScript("/" + drupalSettings.mappy.location + "/js/google.mappy.js");
             });
         }
     });

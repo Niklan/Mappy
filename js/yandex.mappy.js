@@ -23,9 +23,9 @@
             // Lat. & long. center of map. We set a little bit later.
             centerCoordinates: "",
             // Width of the map. If not present, we get default value from settings.
-            width: mappy_instance.get(0).getAttribute("width") > 0 ? mappy_instance.get(0).getAttribute("width") : Drupal.settings.mappy_yandex_width,
+            width: mappy_instance.get(0).getAttribute("width") > 0 ? mappy_instance.get(0).getAttribute("width") : drupalSettings.mappy.yandex.width,
             // Height of the map. If not present, we get default value from settings.
-            height: mappy_instance.get(0).getAttribute("height") > 0 ? mappy_instance.get(0).getAttribute("height") : Drupal.settings.mappy_yandex_height,
+            height: mappy_instance.get(0).getAttribute("height") > 0 ? mappy_instance.get(0).getAttribute("height") : drupalSettings.mappy.yandex.height,
             // Scale of the map.
             zoom: mappy_instance.get(0).getAttribute("zoom") > 0 ? parseInt(mappy_instance.get(0).getAttribute("zoom")) : 17,
             // Zoom button (X,Y).

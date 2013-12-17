@@ -23,17 +23,26 @@ function mappy_menu() {
 function mappy_library_info() {
   $config = config('mappy.settings');
 
-  $lib['mappy'] = array(
+  $libraries['mappy'] = array(
+    'title' => 'Mappy.JS',
+    'version' => \Drupal::VERSION,
     'js' => array(
-      drupal_get_path('module', 'mappy') . '/js/mappy.js' => array(
-        'type' => 'setting',
+      drupal_get_path('module', 'mappy') . '/js/mappy.js' => array(),
+      array(
         'data' => array(
-          'mappy_location' => drupal_get_path('module', 'mappy'),
-          'mappy_google_width' => $config->get('google.width'),
-          'mappy_google_height' => $config->get('google.height'),
-          'mappy_yandex_width' => $config->get('yandex.width'),
-          'mappy_yandex_height' => $config->get('yandex.height'),
+          'mappy' => array(
+            'location' => drupal_get_path('module', 'mappy'),
+            'google' => array(
+              'width' => $config->get('google.width'),
+              'height' => $config->get('google.height'),
+            ),
+            'yandex' => array(
+              'width' => $config->get('yandex.width'),
+              'height' => $config->get('yandex.height'),
+            ),
+          ),
         ),
+        'type' => 'setting',
       ),
     ),
     'dependencies' => array(
@@ -43,12 +52,32 @@ function mappy_library_info() {
     ),
   );
 
-  return $lib;
+  return $libraries;
 }
 
 /**
  * Implements hook_page_build().
  */
 function mappy_page_build(&$page) {
-  drupal_add_library('mappy', 'mappy');
+  $config = config('mappy.settings');
+  // Patterns for matching.
+  $pages = drupal_strtolower($config->get('loading.paths'));
+  // Convert path alias to lowercase.
+  $path = drupal_strtolower(Drupal::service('path.alias_manager.cached')->getPathAlias(current_path()));
+  // Compare pages to aliased path.
+  $page_match = drupal_match_path($path, $pages);
+  // Compare for original paths.
+  if ($path != current_path()) {
+    $page_match = $page_match || drupal_match_path(current_path(), $pages);
+  }
+  // Type of the matching path.
+  // 0 - All pages except those listed.
+  // 1 - Only the listed pages.
+  $match_type = $config->get('loading.type');
+
+  // First comparsion for 'All pages except those listed'.
+  // Second for 'Only the listed pages'.
+  if ($match_type == "0" && !$page_match || $match_type && $page_match) {
+    drupal_add_library('mappy', 'mappy');
+  }
 }

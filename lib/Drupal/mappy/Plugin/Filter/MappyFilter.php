@@ -34,10 +34,9 @@ class MappyFilter extends FilterBase {
 
     // In founded tokens, we get parameters.
     foreach ($matches[0] as $ci => $token) {
-      drupal_set_message($token);
       // This is the real magic of Hogwarts. I spent totaly about 5-6 hours
       // to make this pattern work.
-      preg_match_all("/(\\s)+(\\w+):(((\\s)*(\\w+))|(\\'(?:\\.|[^\\'\\\\])*\\'))/i", $token, $parameters);
+      preg_match_all("/(\\s)+(\\w+):(((\\s)*(\\w+))|(\\'(?:\\.|[^\\'\\\\])*\\'))/i", str_replace("&#39;", "'", $token), $parameters);
       // And write parameters to an array.
       $att = array();
       foreach ($parameters['2'] as $key => $name) {

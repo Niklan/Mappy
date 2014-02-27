@@ -49,16 +49,26 @@
                 cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false
             };
 
-            // Obtain the coordinates of the first address (for map center).
-            $.ajax({
-                url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + mappy[index].address + '&sensor=false',
-                success: function (data) {
-                    mappy[index].center_lat = data.results[0].geometry.location.lat;
-                    mappy[index].center_lng = data.results[0].geometry.location.lng;
-                    initialize();
-                },
-                async: false
-            });
+            // Is numeric, then it's ready to use coordinates.
+            if (mappyLatLongValidate(mappy[index].address)) {
+                var latLong = mappy[index].address.toString().split(',');
+                mappy[index].center_lat = latLong[0];
+                mappy[index].center_lng = latLong[1];
+                initialize();
+            }
+            // Else, we search coordinates by API.
+            else {
+                // Obtain the coordinates of the first address (for map center).
+                $.ajax({
+                    url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + mappy[index].address + '&sensor=false',
+                    success: function (data) {
+                        mappy[index].center_lat = data.results[0].geometry.location.lat;
+                        mappy[index].center_lng = data.results[0].geometry.location.lng;
+                        initialize();
+                    },
+                    async: false
+                });
+            }
 
             // Prepare variable for our map.
             maps[index];

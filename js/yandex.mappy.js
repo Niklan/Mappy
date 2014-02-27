@@ -45,15 +45,26 @@
             // If TRUE: balloons will merge into one big, before they zoomed enough for seeing separately.
             cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false
         };
-        console.log(mappy);
-        // Obtain the coordinates of the first address (for map center).
-        $.ajax({
-            url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + mappy[index].address[0] + '&result=1',
-            success: function (data) {
-                mappy[index].centerCoordinates = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
-                create_map();
-            }
-        });
+
+        // Is numeric, then it's ready to use coordinates.
+        if (mappyLatLongValidate(mappy[index].address)) {
+            var latLong = mappy[index].address.toString().split(',');
+            mappy[index].centerCoordinates = [];
+            mappy[index].centerCoordinates[0] = latLong[0];
+            mappy[index].centerCoordinates[1] = latLong[1];
+            create_map();
+        }
+        // Else, we search coordinates by API.
+        else {
+            // Obtain the coordinates of the first address (for map center).
+            $.ajax({
+                url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + mappy[index].address[0] + '&result=1',
+                success: function (data) {
+                    mappy[index].centerCoordinates = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
+                    create_map();
+                }
+            });
+        }
 
         // Generation of map.
         function create_map() {

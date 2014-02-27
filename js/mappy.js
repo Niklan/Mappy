@@ -3,6 +3,31 @@
  * This is main script of Mappy. His route other js files.
  */
 
+/**
+ * This function check address for coordinates.
+ * Is parameter coordinates '58.0000,56.0000', function return true;
+ */
+function mappyLatLongValidate(latLongString) {
+    var latLong = latLongString.toString().split(',');
+    var lat = latLong[0];
+    var long = latLong[1];
+
+    // Latitude must be in range -90 to 90.
+    if(lat < -90 || lat > 90) {
+        return false;
+    }
+    // Longtitude must be in range -180 to 180.
+    else if(long < -180 || long > 180) {
+        return false
+    }
+    else if(!isNaN(lat) && !isNaN(long)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 (function ($) {
     $(document).ready(function () {
         // If found mappy:yandex tag, we attach Yandex Maps script.

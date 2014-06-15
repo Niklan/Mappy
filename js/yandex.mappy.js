@@ -6,7 +6,8 @@
  * version 1.4. In this version attr() case sensitive, we don't need this.
  */
 
-(function ($) {
+(function ($, Drupal) {
+
     // Just optimisation for clear reading code.
     var mappy_tag = $("yandex, mappy\\:yandex");
     // Create own array for storage information for each map (from tag).
@@ -204,32 +205,31 @@
                             // Autozooming.
                             mapStateAutoApply: true
                         }).then(function (route) {
-                                // Clear previous route.
-                                if (router) {
-                                    maps[index].map.geoObjects
-                                        .remove(router);
-                                }
-                                // Route from API.
-                                router = route;
-                                // Draw route.
-                                maps[index].map.geoObjects.add(router);
-                                // Get route points .
-                                var points = route.getWayPoints();
-                                // Bubble type.
-                                points.options.set('preset', 'twirl#redStretchyIcon');
-                                // Icon and text of 'From' bubble.
-                                points.get(0).properties.set('iconContent', 'Ваше местоположение');
-                                // Icon and text of 'Where' bubble.
-                                points.get(1).properties.set('iconContent', 'Мы здесь!');
-                            }, function (error) {
-                                // Display error if exept.
-                                alert("Error: " + error.message);
-                            });
+                            // Clear previous route.
+                            if (router) {
+                                maps[index].map.geoObjects
+                                    .remove(router);
+                            }
+                            // Route from API.
+                            router = route;
+                            // Draw route.
+                            maps[index].map.geoObjects.add(router);
+                            // Get route points .
+                            var points = route.getWayPoints();
+                            // Bubble type.
+                            points.options.set('preset', 'twirl#redStretchyIcon');
+                            // Icon and text of 'From' bubble.
+                            points.get(0).properties.set('iconContent', Drupal.t('Your location'));
+                            // Icon and text of 'Where' bubble.
+                            points.get(1).properties.set('iconContent', Drupal.t("We're here!"));
+                        }, function (error) {
+                            // Display error if exept.
+                            alert("Error: " + error.message);
+                        });
                     });
                 }
             }
         }
     });
 
-
-})(jQuery);
+})(jQuery, Drupal);

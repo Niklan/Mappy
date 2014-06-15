@@ -46,7 +46,9 @@
                 // If FALSE: 'scrolling' page, instead of map zooming.
                 scrollWheel: mappy_instance.get(0).getAttribute("scrollwheel") == "false" ? false : true,
                 // If TRUE: balloons will merge into one big, before they zoomed enough for seeing separately.
-                cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false
+                cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false,
+                // Additional options.
+                additionalOptions: mappy_instance.get(0).getAttribute("options") ? eval("("+mappy_instance.get(0).getAttribute("options")+")") : false
             };
 
             // Is numeric, then it's ready to use coordinates.
@@ -97,6 +99,11 @@
                     mapTypeId: google.maps.MapTypeId[mappy[index].type],
                     scrollwheel: mappy[index].scrollWheel
                 };
+
+                // Merge user options with defaults.
+                if (mappy[index].additionalOptions) {
+                    maps[index].mapOptions = $.extend({}, maps[index].mapOptions, mappy[index].additionalOptions);
+                }
 
                 // Create a map.
                 maps[index].map = new google.maps.Map(document.getElementById('mappy-google-' + [index]), maps[index].mapOptions);

@@ -44,6 +44,20 @@ function mappy_settings() {
     '#collapsed' => FALSE,
   );
 
+  // Version list of Yandex.Maps.
+  $yandex_verions = array(
+    1 => '2.0 (old version)',
+    2 => '2.1.x'
+  );
+
+  $form['yandex_maps']['mappy_yandex_version'] = array(
+    '#type' => 'radios',
+    '#title' => t('Version of Yandex.Map API'),
+    '#default_value' => variable_get('mappy_yandex_version', 2),
+    '#options' =>  $yandex_verions ,
+    '#description' => t('You can choose, which version of Yandex.Maps will be used.'),
+  );
+
   $form['yandex_maps']['mappy_yandex_width'] = array(
     '#type' => 'textfield',
     '#title' => t('Default width'),

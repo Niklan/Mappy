@@ -40,11 +40,22 @@ function mappyLatLongValidate(latLongString) {
                 Drupal.t('Your location');
                 Drupal.t("We're here!");
 
-                // First we connect Yandex.Maps API script.
-                $.getScript("http://api-maps.yandex.ru/2.1/?load=package.full&lang=ru-RU", function () {
-                    // If script loaded, then load our script.
-                    $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.mappy.js");
-                });
+                // Old version. 2.0
+                if (Drupal.settings.mappy_yandex_version == 1) {
+                    // First we connect Yandex.Maps API script.
+                    $.getScript("http://api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU", function () {
+                        // If script loaded, then load our script.
+                        $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.mappy.js");
+                    });
+                }
+                // New version 2.1.x
+                else if (Drupal.settings.mappy_yandex_version == 2) {
+                    // First we connect Yandex.Maps API script.
+                    $.getScript("http://api-maps.yandex.ru/2.1/?load=package.full&lang=ru-RU", function () {
+                        // If script loaded, then load our script.
+                        $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.2.1.mappy.js");
+                    });
+                }
             }
 
             // If found mappy:google tag, we attach Google Maps script.

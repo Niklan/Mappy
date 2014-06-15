@@ -51,6 +51,7 @@ function mappy_page_build(&$page) {
       'mappy_google_height' => variable_get('mappy_google_height', 480),
       'mappy_yandex_width' => variable_get('mappy_yandex_width', 640),
       'mappy_yandex_height' => variable_get('mappy_yandex_height', 480),
+      'mappy_yandex_version' => variable_get('mappy_yandex_version', 2),
     ), 'setting');
     drupal_add_js(drupal_get_path('module', 'mappy') . '/js/mappy.js');
   }

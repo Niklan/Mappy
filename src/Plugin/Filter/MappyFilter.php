@@ -2,23 +2,22 @@
 
 /**
  * @file
- * Contains Drupal\mappy\Plugin\Filter.
+ * Contains Drupal\mappy\Plugin\Filter\MappyFilter.
  */
 
 namespace Drupal\mappy\Plugin\Filter;
 
-use Drupal\filter\Annotation\Filter;
-use Drupal\Core\Annotation\Translation;
 use Drupal\filter\Plugin\FilterBase;
+use Drupal\filter\FilterProcessResult;
 
 /**
  * Provides a filter to display any HTML as plain text.
  *
  * @Filter(
- *   id = "fmappy_filter",
+ *   id = "mappy_filter",
  *   module = "mappy",
  *   title = @Translation("Mappy filter"),
- *   type = FILTER_TYPE_TRANSFORM_IRREVERSIBLE,
+ *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  *   weight = 0
  * )
  */
@@ -27,7 +26,9 @@ class MappyFilter extends FilterBase {
   /**
    * {@inheritdoc}
    */
-  public function process($text, $langcode, $cache, $cache_id) {
+  public function process($text, $langcode) {
+    $result = new FilterProcessResult($text);
+
     // First, we find all mappy tokens.
     $pattern = "/\\[mappy(\\:(.+))?( .+)?\\]/isU";
     preg_match_all($pattern, $text, $matches);
@@ -61,15 +62,16 @@ class MappyFilter extends FilterBase {
       $text = str_replace($token, $tag, $text);
     }
 
-    return $text;
-  }
+    $result->setProcessedText($text);
 
+    return $result;
+  }
 
   /**
    * {@inheritdoc}
    */
   public function tips($long = FALSE) {
-    return t("Every [mappy:service address:'address'] token will be replaced with map.");
+    return $this->t("Every [mappy:service address:'address'] token will be replaced with map.");
   }
 
 }

@@ -8,6 +8,7 @@
 namespace Drupal\mappy\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 class MappySettingsForm extends ConfigFormBase {
 
@@ -21,8 +22,8 @@ class MappySettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state) {
-    $config = config('mappy.settings');
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $config = \Drupal::config('mappy.settings');
 
     $form['google_maps'] = array(
       '#type' => 'fieldset',
@@ -111,14 +112,14 @@ class MappySettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('mappy.settings')
-      ->set('google.width', $form_state['values']['mappy_google_width'])
-      ->set('google.height', $form_state['values']['mappy_google_height'])
-      ->set('yandex.width', $form_state['values']['mappy_yandex_width'])
-      ->set('yandex.height', $form_state['values']['mappy_yandex_height'])
-      ->set('loading.type', $form_state['values']['mappy_load_pages_match'])
-      ->set('loading.paths', $form_state['values']['mappy_load_pages_path'])
+      ->set('google.width', $form_state->getValue('mappy_google_width'))
+      ->set('google.height', $form_state->getValue('mappy_google_height'))
+      ->set('yandex.width', $form_state->getValue('mappy_yandex_width'))
+      ->set('yandex.height', $form_state->getValue('mappy_yandex_height'))
+      ->set('loading.type', $form_state->getValue('mappy_load_pages_match'))
+      ->set('loading.paths', $form_state->getValue('mappy_load_pages_path'))
       ->save();
 
     parent::submitForm($form, $form_state);

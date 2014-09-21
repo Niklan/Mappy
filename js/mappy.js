@@ -16,6 +16,7 @@
 
         // If found mappy:google tag, we attach Google Maps script.
         if ($("google").length || $("mappy\\:google").length) {
+            console.log('finded tag')
             // First, we load main Google script.
             $.getScript("https://www.google.com/jsapi", function () {
                 // If enabled clusters, we must load additional library.

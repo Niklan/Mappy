@@ -4,3 +4,4 @@ package: Custom
 type: module
 version: 1.3
 core: 8.x
+configure: mappy.settings

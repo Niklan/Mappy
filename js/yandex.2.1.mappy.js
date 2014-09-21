@@ -1,6 +1,6 @@
 /**
  * @file
- * This is script for Yandex.Maps 2.0 (old version).
+ * This is script for Yandex.Maps 2.1 (new version).
  *
  * We use get(0).getAttribute instead of attr() because Drupal 7 jquery is
  * version 1.4. In this version attr() case sensitive, we don't need this.
@@ -29,22 +29,12 @@
             height: mappy_instance.get(0).getAttribute("height") > 0 ? mappy_instance.get(0).getAttribute("height") : drupalSettings.mappy.yandex.height,
             // Scale of the map.
             zoom: mappy_instance.get(0).getAttribute("zoom") > 0 ? parseInt(mappy_instance.get(0).getAttribute("zoom")) : 17,
-            // Zoom button (X,Y).
-            zoomControl: mappy_instance.get(0).getAttribute("zoomControl") ? mappy_instance.get(0).getAttribute("zoomControl").split(",") : false,
-            // Small zoom button (X,Y).
-            smallZoomControl: mappy_instance.get(0).getAttribute("smallZoomControl") ? mappy_instance.get(0).getAttribute("smallZoomControl").split(",") : false,
             // Disable balloons.
             addressPlacemark: (mappy_instance.get(0).getAttribute("addressPlacemark") == "false") ? false : true,
-            // If TRUE: users can choose layers.
-            mapTypeControl: mappy_instance.get(0).getAttribute("mapTypeControl") == "true" ? true : false,
-            // If TRUE: display button for controlling jams on road.
-            mapTrafficControl: mappy_instance.get(0).getAttribute("mapTrafficControl") == "true" ? true : false,
             // Content for balloons.
             balloonContent: (mappy_instance.attr("balloonContent")) ? mappy_instance.attr("balloonContent").split(";") : false,
-            // Route controllers.
-            route: mappy_instance.get(0).getAttribute("route") ? mappy_instance.get(0).getAttribute("route").split(",") : false,
-            // If TRUE: balloons will merge into one big, before they zoomed enough for seeing separately.
-            cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false
+            // Controls set.
+            controlsSet: mappy_instance.get(0).getAttribute("controlsSet") ? mappy_instance.get(0).getAttribute("controlsSet").split(",") : ['default']
         };
 
         // Is numeric, then it's ready to use coordinates.
@@ -99,7 +89,7 @@
                             var geoObject = response.geoObjects.get(0);
 
                             geoObject && (result[index] = geoObject);
-                            --size || (result.forEach(geoObjects.add, geoObjects), promise.resolve({geoObjects: geoObjects}));
+                            --size || (result.forEach(geoObjects.add, geoObjects), promise.resolve({ geoObjects: geoObjects }));
                         },
                         function (err) {
                             promise.reject(err);
@@ -123,7 +113,8 @@
                     // Coordinates of the center of the map.
                     center: mappy[index].centerCoordinates,
                     // The scale of the map.
-                    zoom: mappy[index].zoom
+                    zoom: mappy[index].zoom,
+                    controls: mappy[index].controlsSet
                 });
 
                 // Add balloon on map;
@@ -160,76 +151,6 @@
                             async: false
                         });
                     }
-                }
-
-                // Zoom control (X,Y).
-                if (mappy[index].zoomControl) {
-                    maps[index].map.controls
-                        .add('zoomControl', {left: mappy[index].zoomControl[0], top: mappy[index].zoomControl[1]});
-                }
-
-                // Small zoom control (X,Y).
-                if (mappy[index].smallZoomControl) {
-                    maps[index].map.controls
-                        .add('smallZoomControl', {
-                            left: mappy[index].smallZoomControl[0],
-                            top: mappy[index].smallZoomControl[1]
-                        });
-                }
-
-                // Users can select layers.
-                if (mappy[index].mapTypeControl) {
-                    maps[index].map.controls
-                        .add('typeSelector');
-                }
-
-                // Button showing the traffic jams on the road.
-                if (mappy[index].mapTrafficControl) {
-                    maps[index].map.controls
-                        .add(new ymaps.control.TrafficControl());
-                }
-
-                // Create a route.
-                if (mappy[index].route) {
-                    var router;
-                    $("#" + mappy[index].route[0]).click(function () {
-                        // Address 'from'.
-                        var route_address = $("#" + mappy[index].route[1]).val();
-                        // End of route.
-                        var address_coordinates = mappy[index].centerCoordinates;
-
-                        // Generate route.
-                        ymaps.route([
-                            // Form.
-                            route_address,
-                            // Where.
-                            address_coordinates
-                        ], {
-                            // Autozooming.
-                            mapStateAutoApply: true
-                        }).then(function (route) {
-                            // Clear previous route.
-                            if (router) {
-                                maps[index].map.geoObjects
-                                    .remove(router);
-                            }
-                            // Route from API.
-                            router = route;
-                            // Draw route.
-                            maps[index].map.geoObjects.add(router);
-                            // Get route points .
-                            var points = route.getWayPoints();
-                            // Bubble type.
-                            points.options.set('preset', 'twirl#redStretchyIcon');
-                            // Icon and text of 'From' bubble.
-                            points.get(0).properties.set('iconContent', Drupal.t('Your location'));
-                            // Icon and text of 'Where' bubble.
-                            points.get(1).properties.set('iconContent', Drupal.t("We're here!"));
-                        }, function (error) {
-                            // Display error if exept.
-                            alert("Error: " + error.message);
-                        });
-                    });
                 }
             }
         }

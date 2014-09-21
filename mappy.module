@@ -43,7 +43,8 @@ function mappy_page_build(&$page) {
           ),
           'yandex' => array(
             'width' => $config->get('yandex.width'),
-            'height' => $config->get('yandex.height')
+            'height' => $config->get('yandex.height'),
+            'version' => $config->get('yandex.version')
           )
         ),
       ),

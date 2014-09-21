@@ -9,3 +9,4 @@ google:
 yandex:
   width: 640
   height: 480
+  version: 2

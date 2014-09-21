@@ -28,7 +28,7 @@
                 // Width of the map. If not present, we get default value from settings.
                 width: mappy_instance.get(0).getAttribute("width") > 0 ? mappy_instance.get(0).getAttribute("width") : drupalSettings.mappy.google.width,
                 // Height of the map. If not present, we get default value from settings.
-                height: mappy_instance.get(0).getAttribute("height") > 0 ? mappy_instance.get(0).getAttribute("height") : drupalSettings.mappy.google.height,
+                height: mappy_instance.get(0).getAttribute("height") > 0 ? mappy_instance.get(0).getAttribute("height") : drupalSettings.mappy.google.width,
                 // Scale of the map.
                 zoom: mappy_instance.get(0).getAttribute("zoom") > 0 ? parseInt(mappy_instance.get(0).getAttribute("zoom")) : 17,
                 // The map type.
@@ -46,19 +46,31 @@
                 // If FALSE: 'scrolling' page, instead of map zooming.
                 scrollWheel: mappy_instance.get(0).getAttribute("scrollwheel") == "false" ? false : true,
                 // If TRUE: balloons will merge into one big, before they zoomed enough for seeing separately.
-                cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false
+                cluster: mappy_instance.get(0).getAttribute("clusters") == "true" ? true : false,
+                // Additional options.
+                additionalOptions: mappy_instance.get(0).getAttribute("options") ? eval("("+mappy_instance.get(0).getAttribute("options")+")") : false
             };
 
-            // Obtain the coordinates of the first address (for map center).
-            $.ajax({
-                url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + mappy[index].address + '&sensor=false',
-                success: function (data) {
-                    mappy[index].center_lat = data.results[0].geometry.location.lat;
-                    mappy[index].center_lng = data.results[0].geometry.location.lng;
-                    initialize();
-                },
-                async: false
-            });
+            // Is numeric, then it's ready to use coordinates.
+            if (mappyLatLongValidate(mappy[index].address)) {
+                var latLong = mappy[index].address.toString().split(',');
+                mappy[index].center_lat = latLong[0];
+                mappy[index].center_lng = latLong[1];
+                initialize();
+            }
+            // Else, we search coordinates by API.
+            else {
+                // Obtain the coordinates of the first address (for map center).
+                $.ajax({
+                    url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + mappy[index].address + '&sensor=false',
+                    success: function (data) {
+                        mappy[index].center_lat = data.results[0].geometry.location.lat;
+                        mappy[index].center_lng = data.results[0].geometry.location.lng;
+                        initialize();
+                    },
+                    async: false
+                });
+            }
 
             // Prepare variable for our map.
             maps[index];
@@ -87,6 +99,11 @@
                     mapTypeId: google.maps.MapTypeId[mappy[index].type],
                     scrollwheel: mappy[index].scrollWheel
                 };
+
+                // Merge user options with defaults.
+                if (mappy[index].additionalOptions) {
+                    maps[index].mapOptions = $.extend({}, maps[index].mapOptions, mappy[index].additionalOptions);
+                }
 
                 // Create a map.
                 maps[index].map = new google.maps.Map(document.getElementById('mappy-google-' + [index]), maps[index].mapOptions);

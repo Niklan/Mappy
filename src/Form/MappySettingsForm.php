@@ -61,6 +61,20 @@ class MappySettingsForm extends ConfigFormBase {
       '#collapsed' => FALSE,
     );
 
+    // Version list of Yandex.Maps.
+    $yandex_verions = array(
+      1 => '2.0 (old version)',
+      2 => '2.1.x'
+    );
+
+    $form['yandex_maps']['mappy_yandex_version'] = array(
+      '#type' => 'radios',
+      '#title' => t('Version of Yandex.Map API'),
+      '#default_value' => $config->get('yandex.version'),
+      '#options' => $yandex_verions ,
+      '#description' => t('You can choose, which version of Yandex.Maps will be used.'),
+    );
+
     $form['yandex_maps']['mappy_yandex_width'] = array(
       '#type' => 'textfield',
       '#title' => t('Default width'),
@@ -118,6 +132,7 @@ class MappySettingsForm extends ConfigFormBase {
       ->set('google.height', $form_state->getValue('mappy_google_height'))
       ->set('yandex.width', $form_state->getValue('mappy_yandex_width'))
       ->set('yandex.height', $form_state->getValue('mappy_yandex_height'))
+      ->set('yandex.version', $form_state->getValue('mappy_yandex_version'))
       ->set('loading.type', $form_state->getValue('mappy_load_pages_match'))
       ->set('loading.paths', $form_state->getValue('mappy_load_pages_path'))
       ->save();

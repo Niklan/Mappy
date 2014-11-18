@@ -58,6 +58,40 @@ function mappy_page_build(&$page) {
 }
 
 /**
+ * Implements hook_token_info().
+ *
+ * Declare out token.
+ */
+function mappy_token_info() {
+  $info = array();
+
+  $info['types']['mappy'] = array(
+    'name' => 'Mappy',
+  );
+
+  $info['tokens']['mappy']['mappy'] = array(
+    'name' => 'Mappy',
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function mappy_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  $replacements = array();
+
+  if ($type == 'mappy') {
+    foreach ($tokens as $name => $original) {
+      $replacements[$original] = mappy_token_to_html($original);
+    }
+  }
+
+  return $replacements;
+}
+
+/**
  * Implements hook_filter_info().
  *
  * Declare our filter.
@@ -85,28 +119,7 @@ function _mappy_filter_prepare($text, $filter) {
 
   // In founded tokens, we get parameters.
   foreach ($matches[0] as $ci => $token) {
-    // This is the real magic of Hogwarts. I spent totaly about 5-6 hours
-    // to make this pattern work.
-    preg_match_all("/(\\s)+(\\w+):(((\\s)*(\\w+))|(\\'(?:\\.|[^\\'\\\\])*\\'))/i", str_replace("&#39;", "'", $token), $parameters);
-    // And write parameters to an array.
-    $att = array();
-    foreach ($parameters['2'] as $key => $name) {
-      // Additional, we remove quotes.
-      $att[$parameters['2'][$key]] = str_replace("'", "", $parameters['3'][$key]);
-    }
-
-    // Now we generate HTML Mappy tag.
-    // Which service are using. Google or Yandex.
-    $service = $matches[2][$ci];
-    // Generate attributes.
-    $attributes = "";
-    foreach ($att as $key => $value) {
-      $attributes .= " {$key}=\"{$value}\"";
-    }
-
-    // And add all to tag.
-    // Without '<mappy:' because drupal remove colons from tag.
-    $tag = "<{$service} {$attributes}></{$service}>";
+    $tag = mappy_token_to_html($token);
 
     // Replace token for tag.
     $text = str_replace($token, $tag, $text);
@@ -128,3 +141,37 @@ function _mappy_filter_process($text, $filter) {
 function _mappy_filter_tips($filter, $format, $long = FALSE) {
   return t('Every [mappy:service address:\'address\'] will be replaced with map.');
 }
+
+/**
+ * Replace token [mappy:google ... ] to html analogue <mappy:google ...>.
+ */
+function mappy_token_to_html($token) {
+  $pattern = "/\\[mappy(\\:(.+))?( .+)?\\]/isU";
+  preg_match_all($pattern, $token, $matches);
+  $service = $matches[2][0];
+
+  // This is the real magic of Hogwarts. I spent totaly about 5-6 hours
+  // to make this pattern work.
+  preg_match_all("/(\\s)+(\\w+):(((\\s)*(\\w+))|(\\'(?:\\.|[^\\'\\\\])*\\'))/i", str_replace("&#39;", "'", $token), $parameters);
+
+  // And write parameters to an array.
+  $att = array();
+  foreach ($parameters['0'] as $key => $name) {
+    // Additional, we remove quotes.
+    $att[$parameters['2'][$key]] = str_replace("'", "", $parameters['3'][$key]);
+  }
+
+  // Now we generate HTML Mappy tag.
+  // Generate attributes.
+  $attributes = "";
+  foreach ($att as $key => $value) {
+    $attributes .= " {$key}=\"{$value}\"";
+  }
+
+  // And add all to tag.
+  // Without '<mappy:' because drupal remove colons from tag.
+  $tag = "<{$service}{$attributes}></{$service}>";
+
+  return $tag;
+}
+

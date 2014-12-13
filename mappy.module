@@ -67,10 +67,12 @@ function mappy_token_info() {
 
   $info['types']['mappy'] = array(
     'name' => 'Mappy',
+    'description' => 'Mappy token',
   );
 
   $info['tokens']['mappy']['mappy'] = array(
     'name' => 'Mappy',
+    'description' => 'Mappy token',
   );
 
   return $info;

@@ -14,6 +14,15 @@ class MappySettingsForm extends ConfigFormBase {
     return 'mappy_admin_settings';
   }
 
+   /**
+    * {@inheritdoc}
+    */
+  protected function getEditableConfigNames() {
+    return [
+      'mappy.settings',
+    ];
+  }
+
   /**
    * {@inheritdoc}
    */

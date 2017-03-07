@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\mappy\Plugin\Filter\MappyFilter.
- */
-
 namespace Drupal\mappy\Plugin\Filter;
 
 use Drupal\filter\Plugin\FilterBase;

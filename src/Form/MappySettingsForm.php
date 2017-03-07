@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\mappy\Form\MappySettingsForm.
- */
-
 namespace Drupal\mappy\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
@@ -27,7 +22,7 @@ class MappySettingsForm extends ConfigFormBase {
 
     $form['google_maps'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Google Maps'),
+      '#title' => $this->t('Google Maps'),
       '#weight' => 1,
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
@@ -35,8 +30,8 @@ class MappySettingsForm extends ConfigFormBase {
 
     $form['google_maps']['mappy_google_width'] = array(
       '#type' => 'textfield',
-      '#title' => t('Default width'),
-      '#description' => t('Default width of the map. It is used when the parameter is not specified.'),
+      '#title' => $this->t('Default width'),
+      '#description' => $this->t('Default width of the map. It is used when the parameter is not specified.'),
       '#default_value' => $config->get('google.width'),
       '#size' => 60,
       '#maxlength' => 128,
@@ -45,8 +40,8 @@ class MappySettingsForm extends ConfigFormBase {
 
     $form['google_maps']['mappy_google_height'] = array(
       '#type' => 'textfield',
-      '#title' => t('Default height'),
-      '#description' => t('Default height of the map. It is used when the parameter is not specified.'),
+      '#title' => $this->t('Default height'),
+      '#description' => $this->t('Default height of the map. It is used when the parameter is not specified.'),
       '#default_value' => $config->get('google.height'),
       '#size' => 60,
       '#maxlength' => 128,
@@ -55,7 +50,7 @@ class MappySettingsForm extends ConfigFormBase {
 
     $form['yandex_maps'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Yandex Maps'),
+      '#title' => $this->t('Yandex Maps'),
       '#weight' => 1,
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
@@ -69,16 +64,16 @@ class MappySettingsForm extends ConfigFormBase {
 
     $form['yandex_maps']['mappy_yandex_version'] = array(
       '#type' => 'radios',
-      '#title' => t('Version of Yandex.Map API'),
+      '#title' => $this->t('Version of Yandex.Map API'),
       '#default_value' => $config->get('yandex.version'),
       '#options' => $yandex_verions ,
-      '#description' => t('You can choose, which version of Yandex.Maps will be used.'),
+      '#description' => $this->t('You can choose, which version of Yandex.Maps will be used.'),
     );
 
     $form['yandex_maps']['mappy_yandex_width'] = array(
       '#type' => 'textfield',
-      '#title' => t('Default width'),
-      '#description' => t('Default width of the map. It is used when the parameter is not specified.'),
+      '#title' => $this->t('Default width'),
+      '#description' => $this->t('Default width of the map. It is used when the parameter is not specified.'),
       '#default_value' => $config->get('yandex.width'),
       '#size' => 60,
       '#maxlength' => 128,
@@ -86,8 +81,8 @@ class MappySettingsForm extends ConfigFormBase {
     );
     $form['yandex_maps']['mappy_yandex_height'] = array(
       '#type' => 'textfield',
-      '#title' => t('Default height'),
-      '#description' => t('Default height of the map. It is used when the parameter is not specified.'),
+      '#title' => $this->t('Default height'),
+      '#description' => $this->t('Default height of the map. It is used when the parameter is not specified.'),
       '#default_value' => $config->get('yandex.height'),
       '#size' => 60,
       '#maxlength' => 128,
@@ -96,27 +91,27 @@ class MappySettingsForm extends ConfigFormBase {
 
     $form['loading_settings'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Mappy.js loading settings'),
+      '#title' => $this->t('Mappy.js loading settings'),
       '#weight' => 1,
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
     );
 
     $match_type = array(
-      0 => t('All pages except those listed'),
-      1 => t('Only the listed pages'),
+      0 => $this->t('All pages except those listed'),
+      1 => $this->t('Only the listed pages'),
     );
 
     $form['loading_settings']['mappy_load_pages_match'] = array(
       '#type' => 'radios',
-      '#title' => t('Attach Mappy.js on specific pages'),
+      '#title' => $this->t('Attach Mappy.js on specific pages'),
       '#default_value' => $config->get('loading.type'),
       '#options' => $match_type,
     );
 
     $form['loading_settings']['mappy_load_pages_path'] = array(
       '#type' => 'textarea',
-      '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are blog for the blog page and blog/* for every personal blog. &lt;front&gt; is the front page."),
+      '#description' => $this->t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are blog for the blog page and blog/* for every personal blog. &lt;front&gt; is the front page."),
       '#default_value' => $config->get('loading.paths'),
     );
 

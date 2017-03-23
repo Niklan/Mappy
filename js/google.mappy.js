@@ -16,7 +16,7 @@
         // Create array of maps.
         var maps = []
         // We apply map for each tag founded on page.
-        mappy_tag.each(function (index) {
+        mappy_tag.once('mappy').each(function (index) {
             // Instance of tag.
             var mappy_instance = $(this);
             mappy[index] = {

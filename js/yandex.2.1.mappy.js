@@ -147,8 +147,7 @@
                                 geocoding_coord = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
                                 var address = data.response.GeoObjectCollection.featureMember[0].GeoObject.name;
                                 (mappy[index].addressPlacemark) ? addBalloon(geocoding_coord, address, content) : false;
-                            },
-                            async: false
+                            }
                         });
                     }
                 }

@@ -49,7 +49,7 @@
         else {
             // Obtain the coordinates of the first address (for map center).
             $.ajax({
-                url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + mappy[index].address[0] + '&result=1',
+                url: '//geocode-maps.yandex.ru/1.x/?format=json&geocode=' + mappy[index].address[0] + '&result=1',
                 success: function (data) {
                     mappy[index].centerCoordinates = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
                     create_map();
@@ -142,7 +142,7 @@
                         }
 
                         $.ajax({
-                            url: 'http://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + mappy[index].address[i] + '&result=1',
+                            url: '//geocode-maps.yandex.ru/1.x/?format=json&geocode=' + mappy[index].address[i] + '&result=1',
                             success: function (data) {
                                 geocoding_coord = data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos.split(" ").reverse();
                                 var address = data.response.GeoObjectCollection.featureMember[0].GeoObject.name;

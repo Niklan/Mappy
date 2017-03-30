@@ -43,7 +43,7 @@ function mappyLatLongValidate(latLongString) {
                 // Old version. 2.0
                 if (Drupal.settings.mappy_yandex_version == 1) {
                     // First we connect Yandex.Maps API script.
-                    $.getScript("http://api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU", function () {
+                    $.getScript("//api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU", function () {
                         // If script loaded, then load our script.
                         $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.mappy.js");
                     });
@@ -51,7 +51,7 @@ function mappyLatLongValidate(latLongString) {
                 // New version 2.1.x
                 else if (Drupal.settings.mappy_yandex_version == 2) {
                     // First we connect Yandex.Maps API script.
-                    $.getScript("http://api-maps.yandex.ru/2.1/?load=package.full&lang=ru-RU", function () {
+                    $.getScript("//api-maps.yandex.ru/2.1/?load=package.full&lang=ru-RU", function () {
                         // If script loaded, then load our script.
                         $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.2.1.mappy.js");
                     });
@@ -61,10 +61,10 @@ function mappyLatLongValidate(latLongString) {
             // If found mappy:google tag, we attach Google Maps script.
             if ($("google").length || $("mappy\\:google").length) {
                 // First, we load main Google script.
-                $.getScript("https://www.google.com/jsapi", function () {
+                $.getScript("//www.google.com/jsapi", function () {
                     // If enabled clusters, we must load additional library.
                     if ($("google, mappy\\:google").attr("clusters")) {
-                        $.getScript("http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js");
+                        $.getScript("//google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js");
                     }
                     // Finally, we load our script for handle tag.
                     $.getScript("/" + Drupal.settings.mappy_location + "/js/google.mappy.js");

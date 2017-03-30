@@ -62,7 +62,7 @@
             else {
                 // Obtain the coordinates of the first address (for map center).
                 $.ajax({
-                    url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + mappy[index].address + '&sensor=false',
+                    url: '//maps.googleapis.com/maps/api/geocode/json?address=' + mappy[index].address + '&sensor=false',
                     success: function (data) {
                         mappy[index].center_lat = data.results[0].geometry.location.lat;
                         mappy[index].center_lng = data.results[0].geometry.location.lng;
@@ -119,7 +119,7 @@
                         var placemarkContent = mappy[index].balloonContent[i];
 
                         $.ajax({
-                            url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + mappy[index].address[i] + '&sensor=false',
+                            url: '//maps.googleapis.com/maps/api/geocode/json?address=' + mappy[index].address[i] + '&sensor=false',
                             success: function (data) {
                                 placemarkLat = data.results[0].geometry.location.lat;
                                 placemarkLng = data.results[0].geometry.location.lng;

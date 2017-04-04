@@ -45,7 +45,7 @@ function mappyLatLongValidate(latLongString) {
                     // First we connect Yandex.Maps API script.
                     $.getScript("//api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU", function () {
                         // If script loaded, then load our script.
-                        $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.mappy.js");
+                        $.getScript(Drupal.settings.basePath + Drupal.settings.mappy_location + "/js/yandex.mappy.js");
                     });
                 }
                 // New version 2.1.x
@@ -53,7 +53,7 @@ function mappyLatLongValidate(latLongString) {
                     // First we connect Yandex.Maps API script.
                     $.getScript("//api-maps.yandex.ru/2.1/?load=package.full&lang=ru-RU", function () {
                         // If script loaded, then load our script.
-                        $.getScript("/" + Drupal.settings.mappy_location + "/js/yandex.2.1.mappy.js");
+                        $.getScript(Drupal.settings.basePath + Drupal.settings.mappy_location + "/js/yandex.2.1.mappy.js");
                     });
                 }
             }
@@ -67,7 +67,7 @@ function mappyLatLongValidate(latLongString) {
                         $.getScript("//google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js");
                     }
                     // Finally, we load our script for handle tag.
-                    $.getScript("/" + Drupal.settings.mappy_location + "/js/google.mappy.js");
+                    $.getScript(Drupal.settings.basePath + Drupal.settings.mappy_location + "/js/google.mappy.js");
                 });
             }
         }

@@ -34,7 +34,7 @@ class MappyFilter extends FilterBase {
       // to make this pattern work.
       preg_match_all("/(\\s)+(\\w+):(((\\s)*(\\w+))|(\\'(?:\\.|[^\\'\\\\])*\\'))/i", str_replace("&#39;", "'", $token), $parameters);
       // And write parameters to an array.
-      $att = array();
+      $att = [];
       foreach ($parameters['2'] as $key => $name) {
         // Additional, we remove quotes.
         $att[$parameters['2'][$key]] = str_replace("'", "", $parameters['3'][$key]);

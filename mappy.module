@@ -33,22 +33,22 @@ function mappy_page_build(&$page) {
   // Second for 'Only the listed pages'.
   if ($match_type == "0" && !$page_match || $match_type && $page_match) {
     $page['#attached']['library'][] = 'mappy/mappy.mappy';
-    $page['#attached']['js'][] = array(
-      'data' => array(
-        'mappy' => array(
+    $page['#attached']['js'][] = [
+      'data' => [
+        'mappy' => [
           'location' => drupal_get_path('module', 'mappy'),
-          'google' => array(
+          'google' => [
             'width' => $config->get('google.width'),
             'height' => $config->get('google.height')
-          ),
-          'yandex' => array(
+          ],
+          'yandex' => [
             'width' => $config->get('yandex.width'),
             'height' => $config->get('yandex.height'),
             'version' => $config->get('yandex.version')
-          )
-        ),
-      ),
+          ]
+        ],
+      ],
       'type' => 'setting'
-    );
+    ];
   }
 }
